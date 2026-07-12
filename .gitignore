@@ -1,0 +1,16 @@
+# Documents internes (stratégie de réponse au marché) — hors dépôt public
+docs/
+CDC_MAQUETTES.md
+
+# Dépendances / outils
+node_modules/
+.netlify/
+.cache/
+
+# Système
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
