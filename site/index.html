@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ville de Thiais — Site officiel (maquette)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    html { scroll-behavior: smooth; }
+    body { margin: 0; font-family: 'Public Sans', system-ui, sans-serif; color: #33475B; background: #FFFFFF; -webkit-font-smoothing: antialiased; }
+    a { color: #0E64A5; text-decoration: none; }
+    a:hover { color: #0A4A7C; }
+    button { font-family: 'Public Sans', system-ui, sans-serif; }
+    :focus-visible { outline: 3px solid #0E64A5; outline-offset: 2px; border-radius: 4px; }
+    ::selection { background: #CFE4F5; }
+    @keyframes lysDraw { from { stroke-dashoffset: 320; } to { stroke-dashoffset: 0; } }
+    @keyframes loadBar { 0% { width: 0; } 55% { width: 62%; } 100% { width: 100%; } }
+    @keyframes navBar { 0% { width: 0; opacity: 1; } 60% { width: 68%; } 100% { width: 96%; opacity: 1; } }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+    @keyframes slideRight { from { transform: translateX(-100%); } to { transform: none; } }
+    @keyframes popIn { from { opacity: 0; transform: translateY(16px) scale(.97); } to { opacity: 1; transform: none; } }
+    @keyframes typingDot { 0%, 60%, 100% { opacity: .25; transform: translateY(0); } 30% { opacity: 1; transform: translateY(-3px); } }
+    @keyframes cardIn { from { opacity: 0; transform: translateY(16px) scale(.985); } to { opacity: 1; transform: none; } }
+    @keyframes heroIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
+    @keyframes floatY { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
+    @keyframes accentGrow { from { width: 0; } to { width: 44px; } }
+    @keyframes pulseRing { 0% { box-shadow: 0 0 0 0 rgba(14,100,165,.35); } 70% { box-shadow: 0 0 0 12px rgba(14,100,165,0); } 100% { box-shadow: 0 0 0 0 rgba(14,100,165,0); } }
+  </style>
+</helmet>
+
+<div id="thiais-root" style="background: #FFFFFF; min-height: 100vh; zoom: {{ zoomLevel }};">
+
+  <!-- ══ LOADER LYS (une fois par session) ══ -->
+  <sc-if value="{{ showLoader }}" hint-placeholder-val="{{ false }}">
+    <div aria-hidden="true" style="position: fixed; inset: 0; z-index: 400; background: #FFFFFF; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px; opacity: {{ loaderOpacity }}; transition: opacity .45s ease;">
+      <svg width="76" height="76" viewBox="0 0 64 64" fill="none" stroke="#0E64A5" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="stroke-dasharray: 320; animation: lysDraw 1.2s ease forwards;">
+        <path d="M32 6 C27 15 25 21 25 28 C25 36 29 42 32 44 C35 42 39 36 39 28 C39 21 37 15 32 6 Z"></path>
+        <path d="M21 21 C14 25 11 31 13 37 C15 42 20 44 25 42"></path>
+        <path d="M43 21 C50 25 53 31 51 37 C49 42 44 44 39 42"></path>
+        <path d="M23 48 L41 48"></path>
+        <path d="M27 52 C27 55 26 58 24 60"></path>
+        <path d="M32 52 L32 60"></path>
+        <path d="M37 52 C37 55 38 58 40 60"></path>
+      </svg>
+      <div style="font-size: 13px; font-weight: 700; letter-spacing: .32em; color: #0B2B45; text-transform: uppercase;">Ville de Thiais</div>
+      <div style="width: 148px; height: 3px; background: #E3EEF7; border-radius: 99px; overflow: hidden;">
+        <div style="height: 100%; background: #0E64A5; border-radius: 99px; animation: loadBar 1.2s ease forwards;"></div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ══ Barre de progression de navigation (CCTP : indicateur de chargement) ══ -->
+  <sc-if value="{{ navLoading }}" hint-placeholder-val="{{ false }}">
+    <div aria-hidden="true" style="position: fixed; top: 0; left: 0; height: 3px; background: #0E64A5; z-index: 300; border-radius: 0 99px 99px 0; animation: navBar 1.3s ease forwards;"></div>
+  </sc-if>
+
+  <!-- Lien d'évitement RGAA -->
+  <a href="#contenu" style="position: fixed; top: 8px; left: 8px; z-index: 500; background: #0B2B45; color: #FFFFFF; padding: 10px 18px; border-radius: 8px; font-weight: 600; font-size: 15px; transform: translateY(-200%); transition: transform .2s;" style-focus="transform: none;">Aller au contenu</a>
+
+  <!-- ══ HEADER ══ -->
+  <header data-screen-label="Header" style="position: sticky; top: 0; z-index: 90; background: rgba(255,255,255,.92); backdrop-filter: blur(12px); border-bottom: 1px solid {{ headerBorder }}; box-shadow: {{ headerShadow }}; transition: box-shadow .3s ease;">
+    <div style="max-width: 1280px; margin: 0 auto; padding: 0 24px; height: 76px; display: flex; align-items: center; gap: 18px;">
+      <button aria-label="Ouvrir le menu" onClick="{{ openMenu }}" style="display: flex; align-items: center; gap: 10px; background: none; border: 1px solid #D8E4EE; border-radius: 10px; padding: 10px 16px; cursor: pointer; color: #0B2B45; font-size: 15px; font-weight: 700; transition: all .2s;" style-hover="border-color: #0E64A5; background: #EDF4FA;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16"></path><path d="M4 12h16"></path><path d="M4 17h10"></path></svg>
+        <span style="display: {{ hideOnMobile }};">Menu</span>
+      </button>
+
+      <a href="#" onClick="{{ goHome }}" aria-label="Ville de Thiais — retour à l'accueil" style="display: flex; align-items: center; gap: 12px;">
+        <img src="assets/logo-thiais.jpg" alt="Ville de Thiais" width="46" height="46" style="border-radius: 8px; display: block;" />
+        <span style="display: {{ hideOnMobile }}; flex-direction: column; line-height: 1.15;">
+          <span style="font-size: 17px; font-weight: 800; color: #0B2B45; letter-spacing: -.01em;">Ville de Thiais</span>
+          <span style="font-size: 12px; color: #64788A; font-weight: 500;">Val-de-Marne</span>
+        </span>
+      </a>
+
+      <div style="flex: 1;"></div>
+
+      <sc-if value="{{ isDesktop }}" hint-placeholder-val="{{ true }}">
+        <nav aria-label="Réseaux sociaux" style="display: flex; align-items: center; gap: 2px; padding-right: 10px; border-right: 1px solid #D8E4EE;">
+          <a href="#" onClick="{{ navSocial }}" aria-label="Facebook" style="display: flex; padding: 8px; border-radius: 8px; color: #64788A; transition: all .2s;" style-hover="color: #0E64A5; background: #EDF4FA;"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 21v-7h2.6l.4-3h-3V9.1c0-.9.3-1.5 1.6-1.5h1.5V4.9c-.3 0-1.2-.1-2.2-.1-2.2 0-3.7 1.3-3.7 3.8V11H8v3h2.7v7h2.8z"></path></svg></a>
+          <a href="#" onClick="{{ navSocial }}" aria-label="Instagram" style="display: flex; padding: 8px; border-radius: 8px; color: #64788A; transition: all .2s;" style-hover="color: #0E64A5; background: #EDF4FA;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3.5" y="3.5" width="17" height="17" rx="4.5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none"></circle></svg></a>
+          <a href="#" onClick="{{ navSocial }}" aria-label="YouTube" style="display: flex; padding: 8px; border-radius: 8px; color: #64788A; transition: all .2s;" style-hover="color: #0E64A5; background: #EDF4FA;"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M21.6 7.2a2.5 2.5 0 0 0-1.8-1.8C18.2 5 12 5 12 5s-6.2 0-7.8.4A2.5 2.5 0 0 0 2.4 7.2 26 26 0 0 0 2 12a26 26 0 0 0 .4 4.8 2.5 2.5 0 0 0 1.8 1.8c1.6.4 7.8.4 7.8.4s6.2 0 7.8-.4a2.5 2.5 0 0 0 1.8-1.8A26 26 0 0 0 22 12a26 26 0 0 0-.4-4.8zM10 15V9l5.2 3L10 15z"></path></svg></a>
+          <a href="#" onClick="{{ navSocial }}" aria-label="LinkedIn" style="display: flex; padding: 8px; border-radius: 8px; color: #64788A; transition: all .2s;" style-hover="color: #0E64A5; background: #EDF4FA;"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M6.5 8.5H3.6V21h2.9V8.5zM5 7.2a1.7 1.7 0 1 0 0-3.4 1.7 1.7 0 0 0 0 3.4zM21 13.9c0-3.2-1.7-4.7-4-4.7-1.8 0-2.6 1-3.1 1.7V8.5H11V21h2.9v-6.7c0-1.3.9-2.1 2-2.1s1.9.8 1.9 2.2V21H21v-7.1z"></path></svg></a>
+        </nav>
+      </sc-if>
+
+      <!-- Recherche UNIQUE, en haut à droite (exigence CCTP) -->
+      <form role="search" onSubmit="{{ searchSubmit }}" style="display: flex; align-items: center; gap: 8px; background: #EDF4FA; border: 1px solid transparent; border-radius: 99px; padding: 9px 16px; min-width: 0; width: clamp(150px, 24vw, 300px); transition: all .2s;" style-focus="border-color: #0E64A5; background: #FFFFFF;">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#0E64A5" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+        <input type="search" value="{{ searchQ }}" onChange="{{ searchChange }}" placeholder="Rechercher…" aria-label="Rechercher sur le site" style="border: none; background: transparent; outline: none; font-size: 15px; font-family: inherit; color: #0B2B45; width: 100%; min-width: 0;" />
+      </form>
+
+      <!-- Bouton accessibilité -->
+      <div style="position: relative;">
+        <button aria-label="Options d'accessibilité" onClick="{{ toggleA11y }}" style="display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; background: #0E64A5; color: #FFFFFF; border: none; border-radius: 99px; cursor: pointer; transition: background .2s;" style-hover="background: #0A4A7C;">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2"></circle><path d="M4 9.5c2.7.8 5.3 1.2 8 1.2s5.3-.4 8-1.2"></path><path d="M12 10.7v4l-2.5 6"></path><path d="M12 14.7l2.5 6"></path></svg>
+        </button>
+        <sc-if value="{{ a11yOpen }}" hint-placeholder-val="{{ false }}">
+          <div role="dialog" aria-label="Options d'accessibilité" style="position: absolute; top: 54px; right: 0; width: 296px; background: #FFFFFF; border: 1px solid #D8E4EE; border-radius: 14px; box-shadow: 0 18px 44px rgba(11,43,69,.16); padding: 18px; animation: popIn .22s ease;">
+            <div style="font-size: 15px; font-weight: 800; color: #0B2B45; margin-bottom: 14px;">Accessibilité</div>
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px;">
+              <span style="font-size: 14.5px; font-weight: 500;">Taille du texte</span>
+              <span style="display: flex; gap: 6px;">
+                <button onClick="{{ fontMinus }}" aria-label="Réduire le texte" style="width: 36px; height: 36px; border: 1px solid #D8E4EE; background: #FFFFFF; border-radius: 8px; font-size: 14px; font-weight: 700; color: #0B2B45; cursor: pointer;" style-hover="border-color: #0E64A5;">A−</button>
+                <button onClick="{{ fontPlus }}" aria-label="Agrandir le texte" style="width: 36px; height: 36px; border: 1px solid #D8E4EE; background: #FFFFFF; border-radius: 8px; font-size: 17px; font-weight: 700; color: #0B2B45; cursor: pointer;" style-hover="border-color: #0E64A5;">A+</button>
+              </span>
+            </div>
+            <button onClick="{{ toggleContrast }}" style="width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 11px 12px; border: 1px solid #D8E4EE; background: {{ contrastBg }}; color: {{ contrastColor }}; border-radius: 10px; font-size: 14.5px; font-weight: 600; cursor: pointer; margin-bottom: 12px;">
+              <span>Contraste renforcé</span>
+              <span style="font-size: 13px; font-weight: 700;">{{ contrastLabel }}</span>
+            </button>
+            <div style="display: flex; gap: 10px; align-items: flex-start; padding: 11px 12px; background: #EDF4FA; border-radius: 10px; margin-bottom: 10px;">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#0E64A5" stroke-width="2" stroke-linecap="round" style="flex-shrink: 0; margin-top: 1px;"><path d="M11 5 6 9H3v6h3l5 4z"></path><path d="M15.5 8.5a5 5 0 0 1 0 7"></path><path d="M18.5 5.5a9.5 9.5 0 0 1 0 13"></path></svg>
+              <span style="font-size: 13px; line-height: 1.5; color: #33475B;">Lecture audio des pages disponible sur chaque contenu (ReadSpeaker).</span>
+            </div>
+            <a href="#" onClick="{{ navA11yDecl }}" style="font-size: 13.5px; font-weight: 600; text-decoration: underline;">Déclaration d'accessibilité RGAA</a>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+  </header>
+
+  <!-- ══ BANDEAU ALERTE (canicule) ══ -->
+  <sc-if value="{{ alertVisible }}" hint-placeholder-val="{{ true }}">
+    <div role="alert" data-screen-label="Bandeau alerte" style="background: #B3261E; color: #FFFFFF;">
+      <div style="max-width: 1280px; margin: 0 auto; padding: 12px 24px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M12 3 2.5 20h19L12 3z"></path><path d="M12 10v4"></path><circle cx="12" cy="17" r=".5" fill="currentColor"></circle></svg>
+        <p style="margin: 0; flex: 1; min-width: 220px; font-size: 15px; line-height: 1.5;"><strong style="font-weight: 800;">Vigilance rouge canicule</strong> — Le Val-de-Marne est placé en vigilance rouge depuis samedi 12h. Hydratez-vous et prenez des nouvelles de vos proches.</p>
+        <a href="#" onClick="{{ navAlert }}" style="color: #FFFFFF; font-weight: 700; font-size: 14.5px; text-decoration: underline; white-space: nowrap;">Recommandations et lieux frais</a>
+        <button aria-label="Fermer l'alerte" onClick="{{ closeAlert }}" style="background: rgba(255,255,255,.14); border: none; color: #FFFFFF; width: 32px; height: 32px; border-radius: 8px; cursor: pointer; font-size: 16px; line-height: 1; transition: background .2s;" style-hover="background: rgba(255,255,255,.3);">✕</button>
+      </div>
+    </div>
+  </sc-if>
+
+  <main id="contenu">
+
+    <!-- ══ HÉRO — l'information prime, composition légère et animée ══ -->
+    <section data-screen-label="Intro" style="background: linear-gradient(180deg, #EDF4FA 0%, #FFFFFF 100%); border-bottom: 1px solid #E3EEF7; position: relative; overflow: hidden;">
+      <svg aria-hidden="true" width="420" height="420" viewBox="0 0 64 64" fill="none" stroke="#0E64A5" stroke-width="1" opacity=".06" style="position: absolute; right: -80px; top: -90px;"><path d="M32 6 C27 15 25 21 25 28 C25 36 29 42 32 44 C35 42 39 36 39 28 C39 21 37 15 32 6 Z"></path><path d="M21 21 C14 25 11 31 13 37 C15 42 20 44 25 42"></path><path d="M43 21 C50 25 53 31 51 37 C49 42 44 44 39 42"></path><path d="M23 48 L41 48"></path><path d="M27 52 C27 55 26 58 24 60"></path><path d="M32 52 L32 60"></path><path d="M37 52 C37 55 38 58 40 60"></path></svg>
+      <div style="max-width: 1280px; margin: 0 auto; padding: 60px 24px 66px; display: flex; align-items: center; gap: 64px; flex-wrap: wrap; position: relative;">
+        <div style="flex: 1 1 400px; min-width: 0;">
+          <p style="margin: 0 0 14px; display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: #0E64A5; animation: heroIn .6s ease .05s both;"><span style="display: inline-block; width: 44px; height: 2px; background: #0E64A5; border-radius: 99px; animation: accentGrow .7s ease .3s both;"></span>Bienvenue à Thiais</p>
+          <h1 style="margin: 0 0 16px; font-size: clamp(30px, 4.4vw, 52px); font-weight: 800; letter-spacing: -.025em; line-height: 1.06; color: #0B2B45; text-wrap: balance; animation: heroIn .7s ease .15s both;">Toute votre ville,<br />en <span style="color: #0E64A5;">quelques clics</span>.</h1>
+          <p style="margin: 0 0 26px; font-size: 17.5px; line-height: 1.6; color: #33475B; max-width: 540px; text-wrap: pretty; animation: heroIn .7s ease .28s both;">Démarches en ligne, actualités, agenda des sorties : le nouveau site de la Ville va à l'essentiel — simplement, pour tous les Thiaisiens.</p>
+          <div style="display: flex; gap: 12px; flex-wrap: wrap; animation: heroIn .7s ease .42s both;">
+            <button onClick="{{ navEspaceCitoyens }}" style="display: flex; align-items: center; gap: 10px; padding: 15px 28px; background: #0E64A5; color: #FFFFFF; border: none; border-radius: 99px; font-size: 15.5px; font-weight: 700; cursor: pointer; box-shadow: 0 10px 26px rgba(14,100,165,.28); transition: all .22s ease;" style-hover="background: #0A4A7C; transform: translateY(-2px); box-shadow: 0 14px 32px rgba(14,100,165,.34);">Mes démarches en ligne <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg></button>
+            <button onClick="{{ scrollAgenda }}" style="display: flex; align-items: center; gap: 10px; padding: 15px 26px; background: #FFFFFF; color: #0B2B45; border: 1px solid #D8E4EE; border-radius: 99px; font-size: 15.5px; font-weight: 700; cursor: pointer; transition: all .22s ease;" style-hover="border-color: #0E64A5; color: #0E64A5; transform: translateY(-2px);">Que faire à Thiais ?</button>
+          </div>
+        </div>
+        <sc-if value="{{ isDesktop }}" hint-placeholder-val="{{ true }}">
+          <div style="flex: 0 0 440px; position: relative; padding: 20px 14px 30px 26px;">
+            <div role="img" aria-label="Le parc des Terrasses du Soleil réaménagé" style="width: 440px; height: 292px; border-radius: 20px; box-shadow: 0 24px 60px rgba(11,43,69,.2); background-image: url(https://www.ville-thiais.fr/wp-content/uploads/2025/06/new_parc_terrasses_du_soleil-350x262.jpg); background-size: cover; background-position: center; position: relative; animation: heroIn .8s ease .25s both;">
+              <span style="position: absolute; right: 14px; bottom: 14px; background: rgba(255,255,255,.94); color: #0B2B45; font-size: 12.5px; font-weight: 600; padding: 6px 12px; border-radius: 99px;">Parc des Terrasses du Soleil</span>
+            </div>
+            <button onClick="{{ heroEventGo }}" style="position: absolute; left: -14px; bottom: -6px; display: flex; align-items: center; gap: 13px; background: #FFFFFF; border: 1px solid #E3EEF7; border-radius: 16px; padding: 13px 18px 13px 13px; box-shadow: 0 18px 44px rgba(11,43,69,.18); cursor: pointer; text-align: left; animation: heroIn .6s ease .55s both, floatY 6s ease-in-out 1.6s infinite; transition: box-shadow .2s;" style-hover="box-shadow: 0 22px 52px rgba(11,43,69,.26);">
+              <span style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 48px; height: 48px; background: #EDF4FA; border-radius: 12px; line-height: 1.05;"><span style="font-size: 18px; font-weight: 800; color: #0E64A5;">14</span><span style="font-size: 10px; font-weight: 800; letter-spacing: .08em; color: #64788A; text-transform: uppercase;">Juil</span></span>
+              <span style="display: flex; flex-direction: column; gap: 2px;">
+                <span style="font-size: 11.5px; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; color: #0E64A5;">Prochain grand rendez-vous</span>
+                <span style="font-size: 15px; font-weight: 700; color: #0B2B45;">Feu d'artifice en musique</span>
+                <span style="font-size: 12.5px; color: #64788A;">Place du Général Leclerc · 23h30</span>
+              </span>
+            </button>
+            <button onClick="{{ navMagRead }}" style="position: absolute; top: -4px; right: -8px; display: flex; align-items: center; gap: 9px; background: #0B2B45; color: #FFFFFF; border: none; border-radius: 99px; padding: 10px 17px; font-size: 13px; font-weight: 700; cursor: pointer; box-shadow: 0 14px 34px rgba(11,43,69,.3); animation: heroIn .6s ease .7s both, floatY 7s ease-in-out 2.2s infinite; transition: background .2s;" style-hover="background: #0E64A5;"><svg width="14" height="14" viewBox="0 0 64 64" fill="none" stroke="#8FC1E8" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M32 6 C27 15 25 21 25 28 C25 36 29 42 32 44 C35 42 39 36 39 28 C39 21 37 15 32 6 Z"></path><path d="M23 48 L41 48"></path></svg>Thiais Magazine n°138</button>
+          </div>
+        </sc-if>
+      </div>
+    </section>
+
+    <!-- ══ BLOC 1 — ACCÈS RAPIDES ══ -->
+    <section data-screen-label="Accès rapides" style="max-width: 1280px; margin: 0 auto; padding: 46px 24px 22px;">
+      <div style="display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; margin-bottom: 20px;">
+        <h2 style="margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -.01em; color: #0E64A5;">Accès rapides</h2>
+        <span style="font-size: 14.5px; color: #64788A; font-weight: 500;">L'essentiel, en 1 clic</span>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+        <sc-for list="{{ quickLinks }}" as="q" hint-placeholder-count="13">
+          <a href="#" onClick="{{ q.go }}" style="display: flex; align-items: center; gap: 11px; padding: 8px 20px 8px 9px; background: {{ q.pillBg }}; border: 1px solid {{ q.pillBorder }}; border-radius: 99px; transition: all .22s cubic-bezier(.22,.8,.3,1); animation: cardIn .5s ease {{ q.delay }} both;" style-hover="background: {{ q.hoverBg }}; border-color: #0E64A5; transform: translateY(-3px); box-shadow: 0 10px 24px rgba(11,43,69,.14);">
+            <span style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 99px; background: {{ q.bg }}; color: {{ q.color }}; transition: transform .25s ease;">{{ q.icon }}</span>
+            <span style="font-size: 15px; font-weight: 700; color: {{ q.labelColor }}; line-height: 1.2;">{{ q.label }}</span>
+          </a>
+        </sc-for>
+      </div>
+    </section>
+
+    <!-- ══ BLOC 2 — ACTUALITÉS ══ -->
+    <section data-screen-label="Actualités" data-reveal="1" style="max-width: 1280px; margin: 0 auto; padding: 44px 24px 30px;">
+      <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap; margin-bottom: 8px;">
+        <div>
+          <p style="margin: 0 0 6px; font-size: 13px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: #0E64A5;">À la une</p>
+          <h2 style="margin: 0; font-size: clamp(26px, 3vw, 34px); font-weight: 800; letter-spacing: -.02em; color: #0B2B45;">Actualités</h2>
+        </div>
+        <div role="group" aria-label="Filtrer les actualités par profil" style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+          <span style="font-size: 13.5px; font-weight: 600; color: #64788A; margin-right: 2px;">Je suis…</span>
+          <sc-for list="{{ profiles }}" as="p" hint-placeholder-count="5">
+            <button onClick="{{ p.select }}" aria-pressed="{{ p.active }}" style="padding: 8px 15px; border-radius: 99px; border: 1px solid {{ p.border }}; background: {{ p.bg }}; color: {{ p.color }}; font-size: 13.5px; font-weight: 600; cursor: pointer; transition: all .2s;" style-hover="border-color: #0E64A5;">{{ p.label }}</button>
+          </sc-for>
+        </div>
+      </div>
+
+      <!-- Actu vedette -->
+      <article data-reveal="1" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 0; background: #FFFFFF; border: 1px solid #D8E4EE; border-radius: 18px; overflow: hidden; margin: 18px 0 16px; transition: all .25s ease; cursor: pointer; animation: cardIn .55s ease both;" style-hover="box-shadow: 0 18px 44px rgba(11,43,69,.12); border-color: #A9C9E3;" onClick="{{ featured.go }}">
+        <div style="position: relative; min-height: 260px; background: #EDF4FA;">
+          <div role="img" aria-label="Illustration de l'article" style="position: absolute; inset: 0; background-image: url({{ featured.img }}); background-size: cover; background-position: center;"></div>
+          <span style="position: absolute; top: 14px; left: 14px; background: #0B2B45; color: #FFFFFF; font-size: 12.5px; font-weight: 700; letter-spacing: .04em; padding: 6px 12px; border-radius: 99px; text-transform: uppercase;">{{ featured.cat }}</span>
+        </div>
+        <div style="padding: clamp(22px, 3vw, 36px); display: flex; flex-direction: column; gap: 12px; justify-content: center;">
+          <h3 style="margin: 0; font-size: clamp(21px, 2.2vw, 27px); font-weight: 800; letter-spacing: -.015em; line-height: 1.25; color: #0B2B45; text-wrap: balance;">{{ featured.title }}</h3>
+          <p style="margin: 0; font-size: 16px; line-height: 1.65; color: #33475B; text-wrap: pretty;">{{ featured.excerpt }}</p>
+          <div style="display: flex; align-items: center; gap: 14px; margin-top: 4px;">
+            <time style="font-size: 13.5px; color: #64788A; font-weight: 500;">{{ featured.date }}</time>
+            <span style="font-size: 14px; font-weight: 700; color: #0E64A5; display: flex; align-items: center; gap: 6px;">Lire l'article <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg></span>
+          </div>
+        </div>
+      </article>
+
+      <!-- Grille actus -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(255px, 1fr)); gap: 16px;">
+        <sc-for list="{{ newsGrid }}" as="n" hint-placeholder-count="4">
+          <article onClick="{{ n.go }}" style="background: #FFFFFF; border: 1px solid #D8E4EE; border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; cursor: pointer; transition: all .25s ease; animation: cardIn .5s ease {{ n.delay }} both;" style-hover="transform: translateY(-4px); box-shadow: 0 14px 34px rgba(11,43,69,.11); border-color: #A9C9E3;">
+            <div style="position: relative; height: 150px; background: #EDF4FA;">
+              <div role="img" aria-label="Illustration de l'article" style="position: absolute; inset: 0; background-image: url({{ n.img }}); background-size: cover; background-position: center;"></div>
+              <span style="position: absolute; top: 12px; left: 12px; background: rgba(255,255,255,.95); color: #0E64A5; font-size: 11.5px; font-weight: 800; letter-spacing: .05em; padding: 5px 10px; border-radius: 99px; text-transform: uppercase;">{{ n.cat }}</span>
+            </div>
+            <div style="padding: 18px 18px 16px; display: flex; flex-direction: column; gap: 8px; flex: 1;">
+              <h3 style="margin: 0; font-size: 16.5px; font-weight: 700; line-height: 1.35; color: #0B2B45;">{{ n.title }}</h3>
+              <p style="margin: 0; font-size: 14px; line-height: 1.55; color: #64788A; flex: 1;">{{ n.excerpt }}</p>
+              <time style="font-size: 13px; color: #64788A; font-weight: 500;">{{ n.date }}</time>
+            </div>
+          </article>
+        </sc-for>
+      </div>
+
+      <div style="display: flex; justify-content: center; margin-top: 28px;">
+        <button onClick="{{ navAllNews }}" style="display: flex; align-items: center; gap: 10px; padding: 14px 28px; background: #0E64A5; color: #FFFFFF; border: none; border-radius: 99px; font-size: 15.5px; font-weight: 700; cursor: pointer; transition: all .2s;" style-hover="background: #0A4A7C; transform: translateY(-1px);">Voir toute l'actualité <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg></button>
+      </div>
+    </section>
+
+    <!-- ══ BLOC 3 — AGENDA ══ -->
+    <section id="agenda" data-screen-label="Agenda" data-reveal="1" style="background: #EDF4FA; margin-top: 28px;">
+      <div style="max-width: 1280px; margin: 0 auto; padding: 56px 24px 60px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap; margin-bottom: 20px;">
+          <div>
+            <p style="margin: 0 0 6px; font-size: 13px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: #0E64A5;">Sortir, découvrir, participer</p>
+            <h2 style="margin: 0; font-size: clamp(26px, 3vw, 34px); font-weight: 800; letter-spacing: -.02em; color: #0B2B45;">Que faire à Thiais ?</h2>
+          </div>
+          <a href="#" onClick="{{ navAllAgenda }}" style="font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 7px;">Voir tout l'agenda <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg></a>
+        </div>
+
+        <div role="group" aria-label="Filtres temporels" style="display: flex; gap: 9px; flex-wrap: wrap; margin-bottom: 26px;">
+          <sc-for list="{{ agendaFilters }}" as="f" hint-placeholder-count="5">
+            <button onClick="{{ f.select }}" aria-pressed="{{ f.active }}" style="padding: 10px 18px; border-radius: 99px; border: 1px solid {{ f.border }}; background: {{ f.bg }}; color: {{ f.color }}; font-size: 14.5px; font-weight: 700; cursor: pointer; transition: all .2s; display: flex; align-items: center; gap: 8px;" style-hover="border-color: #0E64A5;">{{ f.label }} <span style="font-size: 12px; font-weight: 800; background: {{ f.countBg }}; color: {{ f.countColor }}; padding: 2px 8px; border-radius: 99px;">{{ f.count }}</span></button>
+          </sc-for>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(262px, 1fr)); gap: 16px;">
+          <sc-for list="{{ events }}" as="e" hint-placeholder-count="4">
+            <article onClick="{{ e.go }}" style="background: #FFFFFF; border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; cursor: pointer; border: 1px solid rgba(216,228,238,.6); transition: all .25s ease; animation: cardIn .5s ease {{ e.delay }} both;" style-hover="transform: translateY(-4px); box-shadow: 0 16px 36px rgba(11,43,69,.13);">
+              <div style="position: relative; height: 148px; background: #D8E4EE;">
+                <div role="img" aria-label="Visuel de l'événement" style="position: absolute; inset: 0; background-image: url({{ e.img }}); background-size: cover; background-position: center;"></div>
+                <div style="position: absolute; top: 12px; left: 12px; background: #FFFFFF; border-radius: 12px; padding: 7px 12px; text-align: center; box-shadow: 0 6px 16px rgba(11,43,69,.16); line-height: 1.1;">
+                  <div style="font-size: 19px; font-weight: 800; color: #0E64A5;">{{ e.day }}</div>
+                  <div style="font-size: 10.5px; font-weight: 800; letter-spacing: .08em; color: #64788A; text-transform: uppercase;">{{ e.month }}</div>
+                </div>
+              </div>
+              <div style="padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 9px; flex: 1;">
+                <span style="font-size: 11.5px; font-weight: 800; letter-spacing: .06em; color: #0E64A5; text-transform: uppercase;">{{ e.cat }}</span>
+                <h3 style="margin: 0; font-size: 16.5px; font-weight: 700; line-height: 1.3; color: #0B2B45; flex: 1;">{{ e.title }}</h3>
+                <div style="display: flex; flex-direction: column; gap: 5px;">
+                  <span style="display: flex; align-items: center; gap: 8px; font-size: 13.5px; color: #33475B;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0E64A5" stroke-width="2" stroke-linecap="round" style="flex-shrink: 0;"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 3"></path></svg>{{ e.time }}</span>
+                  <span style="display: flex; align-items: center; gap: 8px; font-size: 13.5px; color: #33475B;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0E64A5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M12 21s-7-5.5-7-11a7 7 0 0 1 14 0c0 5.5-7 11-7 11z"></path><circle cx="12" cy="10" r="2.5"></circle></svg>{{ e.place }}</span>
+                </div>
+              </div>
+            </article>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ BLOC 4 — KIOSQUE ══ -->
+    <section data-screen-label="Kiosque" data-reveal="1" style="max-width: 1280px; margin: 0 auto; padding: 58px 24px 30px;">
+      <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap; margin-bottom: 24px;">
+        <div>
+          <p style="margin: 0 0 6px; font-size: 13px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: #0E64A5;">Publications de la Ville</p>
+          <h2 style="margin: 0; font-size: clamp(26px, 3vw, 34px); font-weight: 800; letter-spacing: -.02em; color: #0B2B45;">Kiosque</h2>
+        </div>
+        <a href="#" onClick="{{ navKiosque }}" style="font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 7px;">Toutes les publications <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg></a>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap: 16px; align-items: stretch;">
+        <!-- Magazine mis en valeur -->
+        <div style="grid-column: span 1; background: #0B2B45; border-radius: 18px; padding: clamp(24px, 3vw, 36px); display: flex; gap: 28px; align-items: center; flex-wrap: wrap; position: relative; overflow: hidden;">
+          <svg aria-hidden="true" width="230" height="230" viewBox="0 0 64 64" fill="none" stroke="#FFFFFF" stroke-width="1" opacity=".08" style="position: absolute; right: -40px; bottom: -50px;"><path d="M32 6 C27 15 25 21 25 28 C25 36 29 42 32 44 C35 42 39 36 39 28 C39 21 37 15 32 6 Z"></path><path d="M21 21 C14 25 11 31 13 37 C15 42 20 44 25 42"></path><path d="M43 21 C50 25 53 31 51 37 C49 42 44 44 39 42"></path><path d="M23 48 L41 48"></path></svg>
+          <img src="https://www.ville-thiais.fr/wp-content/uploads/2026/07/thiais_magazine_138-scaled-235x340.png" alt="Couverture de Thiais Magazine n°138" width="150" height="217" style="width: 150px; height: auto; border-radius: 8px; box-shadow: 0 18px 40px rgba(0,0,0,.35); position: relative;" />
+          <div style="flex: 1; min-width: 200px; position: relative;">
+            <p style="margin: 0 0 8px; font-size: 12.5px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: #8FC1E8;">Le magazine municipal</p>
+            <h3 style="margin: 0 0 8px; font-size: 24px; font-weight: 800; color: #FFFFFF; letter-spacing: -.015em;">Thiais Magazine <span style="color: #8FC1E8;">n°138</span></h3>
+            <p style="margin: 0 0 18px; font-size: 14.5px; line-height: 1.6; color: rgba(255,255,255,.82);">Au sommaire : l'été à Thiais, le point sur les grands projets et le dossier esport de La Scène Digitale.</p>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+              <button onClick="{{ navMagRead }}" style="padding: 11px 20px; background: #FFFFFF; color: #0B2B45; border: none; border-radius: 99px; font-size: 14px; font-weight: 700; cursor: pointer; transition: all .2s;" style-hover="background: #DCEBF7;">Feuilleter</button>
+              <button onClick="{{ navMagPdf }}" style="padding: 11px 20px; background: transparent; color: #FFFFFF; border: 1px solid rgba(255,255,255,.4); border-radius: 99px; font-size: 14px; font-weight: 700; cursor: pointer; transition: all .2s;" style-hover="border-color: #FFFFFF; background: rgba(255,255,255,.08);">Télécharger (PDF)</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Autres plaquettes -->
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <sc-for list="{{ leaflets }}" as="l" hint-placeholder-count="3">
+            <a href="#" onClick="{{ l.go }}" style="display: flex; align-items: center; gap: 16px; background: #FFFFFF; border: 1px solid #D8E4EE; border-radius: 14px; padding: 13px 16px; transition: all .2s ease; flex: 1; animation: cardIn .5s ease {{ l.delay }} both;" style-hover="border-color: #A9C9E3; box-shadow: 0 8px 22px rgba(11,43,69,.08);">
+              <span role="img" aria-label="Couverture de la publication" style="width: 52px; height: 72px; border-radius: 6px; box-shadow: 0 4px 12px rgba(11,43,69,.14); flex-shrink: 0; background-color: #EDF4FA; background-image: url({{ l.img }}); background-size: cover; background-position: top center; overflow: hidden; display: block;"></span>
+              <span style="flex: 1; display: flex; flex-direction: column; gap: 3px;">
+                <span style="font-size: 15px; font-weight: 700; color: #0B2B45; line-height: 1.35;">{{ l.title }}</span>
+                <span style="font-size: 13px; color: #64788A;">{{ l.date }} · Feuilleter sur Calameo</span>
+              </span>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#0E64A5" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg>
+            </a>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ BLOC 5 — VIDÉOS ══ -->
+    <section data-screen-label="Vidéos" data-reveal="1" style="max-width: 1280px; margin: 0 auto; padding: 44px 24px 34px;">
+      <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap; margin-bottom: 24px;">
+        <div>
+          <p style="margin: 0 0 6px; font-size: 13px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: #0E64A5;">Thiais en vidéo</p>
+          <h2 style="margin: 0; font-size: clamp(26px, 3vw, 34px); font-weight: 800; letter-spacing: -.02em; color: #0B2B45;">Dernières vidéos</h2>
+        </div>
+        <a href="#" onClick="{{ navYoutube }}" style="font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px;"><svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor"><path d="M21.6 7.2a2.5 2.5 0 0 0-1.8-1.8C18.2 5 12 5 12 5s-6.2 0-7.8.4A2.5 2.5 0 0 0 2.4 7.2 26 26 0 0 0 2 12a26 26 0 0 0 .4 4.8 2.5 2.5 0 0 0 1.8 1.8c1.6.4 7.8.4 7.8.4s6.2 0 7.8-.4a2.5 2.5 0 0 0 1.8-1.8A26 26 0 0 0 22 12a26 26 0 0 0-.4-4.8zM10 15V9l5.2 3L10 15z"></path></svg>Voir la chaîne YouTube</a>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(255px, 1fr)); gap: 16px;">
+        <sc-for list="{{ videos }}" as="v" hint-placeholder-count="3">
+          <a href="#" onClick="{{ v.go }}" style="display: flex; flex-direction: column; gap: 12px; animation: cardIn .5s ease {{ v.delay }} both;" style-hover="color: #0B2B45;">
+            <span style="position: relative; display: block; aspect-ratio: 16 / 9; border-radius: 16px; overflow: hidden; background: #0B2B45;">
+              <span aria-hidden="true" style="position: absolute; inset: 0; background-image: url({{ v.img }}); background-size: cover; background-position: center; opacity: .88; transition: all .3s ease; display: block;"></span>
+              <span style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;">
+                <span style="display: flex; align-items: center; justify-content: center; width: 54px; height: 54px; border-radius: 99px; background: rgba(255,255,255,.94); color: #0E64A5; box-shadow: 0 10px 26px rgba(11,43,69,.3); transition: transform .25s ease;"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5-11-6.5z"></path></svg></span>
+              </span>
+              <span style="position: absolute; right: 10px; bottom: 10px; background: rgba(11,43,69,.85); color: #FFFFFF; font-size: 12px; font-weight: 700; padding: 3px 9px; border-radius: 6px;">{{ v.length }}</span>
+            </span>
+            <span style="display: flex; flex-direction: column; gap: 3px;">
+              <span style="font-size: 15.5px; font-weight: 700; color: #0B2B45; line-height: 1.35;">{{ v.title }}</span>
+              <span style="font-size: 13px; color: #64788A;">{{ v.meta }}</span>
+            </span>
+          </a>
+        </sc-for>
+      </div>
+    </section>
+
+    <!-- ══ BANDE APP MOBILE (pub visible en accueil — exigence CCTP) ══ -->
+    <section data-screen-label="Application mobile" data-reveal="1" style="max-width: 1280px; margin: 0 auto; padding: 20px 24px 64px;">
+      <div style="background: linear-gradient(120deg, #0E64A5, #0A4A7C); border-radius: 20px; padding: clamp(26px, 4vw, 44px); display: flex; align-items: center; gap: 32px; flex-wrap: wrap; position: relative; overflow: hidden;">
+        <svg aria-hidden="true" width="300" height="300" viewBox="0 0 64 64" fill="none" stroke="#FFFFFF" stroke-width="1" opacity=".1" style="position: absolute; left: -70px; bottom: -90px;"><path d="M32 6 C27 15 25 21 25 28 C25 36 29 42 32 44 C35 42 39 36 39 28 C39 21 37 15 32 6 Z"></path><path d="M21 21 C14 25 11 31 13 37 C15 42 20 44 25 42"></path><path d="M43 21 C50 25 53 31 51 37 C49 42 44 44 39 42"></path><path d="M23 48 L41 48"></path></svg>
+        <img src="https://neocitybacko.s3.eu-west-1.amazonaws.com/clients/64abcbd6d1bcd200133ca1f3/app/d5334fc9-bd1b-4190-afc4-4cac92734895.png" alt="" width="74" height="74" style="width: 74px; height: 74px; border-radius: 18px; box-shadow: 0 14px 34px rgba(0,0,0,.3); position: relative; background: #FFFFFF;" />
+        <div style="flex: 1; min-width: 240px; position: relative;">
+          <h2 style="margin: 0 0 6px; font-size: clamp(20px, 2.4vw, 26px); font-weight: 800; color: #FFFFFF; letter-spacing: -.015em;">L'application Ville de Thiais, dans votre poche</h2>
+          <p style="margin: 0; font-size: 15.5px; line-height: 1.55; color: rgba(255,255,255,.85); max-width: 620px;">Alertes en temps réel, signalements, actualités, agenda et démarches : téléchargez l'application officielle, gratuite.</p>
+        </div>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap; position: relative;">
+          <button onClick="{{ navAppStore }}" style="display: flex; align-items: center; gap: 9px; padding: 12px 20px; background: #FFFFFF; color: #0B2B45; border: none; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; transition: all .2s;" style-hover="transform: translateY(-2px);"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M16.4 12.8c0-2.6 2.1-3.8 2.2-3.9-1.2-1.8-3.1-2-3.8-2-1.6-.2-3.1 1-3.9 1s-2-1-3.4-1c-1.7 0-3.3 1-4.2 2.6-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.6 1.3-.1 1.8-.8 3.4-.8s2 .8 3.4.8 2.3-1.3 3.1-2.5c1-1.4 1.4-2.8 1.4-2.9-.1 0-2.7-1-2.7-4.1zM13.8 4.6c.7-.9 1.2-2.1 1.1-3.3-1 0-2.3.7-3 1.6-.7.8-1.3 2-1.1 3.2 1.1.1 2.3-.6 3-1.5z"></path></svg>App Store</button>
+          <button onClick="{{ navPlayStore }}" style="display: flex; align-items: center; gap: 9px; padding: 12px 20px; background: rgba(255,255,255,.12); color: #FFFFFF; border: 1px solid rgba(255,255,255,.4); border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; transition: all .2s;" style-hover="background: rgba(255,255,255,.22);"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M4 3.5v17c0 .4.5.7.8.4l9.4-8.5c.2-.2.2-.6 0-.8L4.8 3.1c-.3-.3-.8 0-.8.4zM15.5 10l2.9 2.6c.3.2.3.6 0 .8L15.5 16l-3-3 3-3zM16.6 9l3.8-2.2c.5-.3 1.1.1 1.1.7v9c0 .6-.6 1-1.1.7L16.6 15l-3.3-3 3.3-3z" opacity=".9"></path></svg>Google Play</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ══ FOOTER ══ -->
+  <footer data-screen-label="Footer" style="background: #0B2B45; color: #FFFFFF;">
+    <div style="max-width: 1280px; margin: 0 auto; padding: 56px 24px 30px;">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 40px;">
+        <div>
+          <div style="display: flex; align-items: center; gap: 13px; margin-bottom: 18px;">
+            <img src="assets/logo-thiais.jpg" alt="" width="52" height="52" style="border-radius: 10px;" />
+            <div style="font-size: 17px; font-weight: 800; line-height: 1.2;">Ville de Thiais<br /><span style="font-size: 12.5px; font-weight: 500; color: #8FC1E8;">Val-de-Marne</span></div>
+          </div>
+          <address style="font-style: normal; font-size: 14.5px; line-height: 1.7; color: rgba(255,255,255,.82);">Hôtel de Ville — Rue Maurepas<br />BP 141 — 94321 Thiais Cedex</address>
+          <a href="tel:0148924242" style="display: inline-flex; align-items: center; gap: 9px; margin-top: 12px; color: #FFFFFF; font-size: 16.5px; font-weight: 800;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8FC1E8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.7A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.2-1.2a2 2 0 0 1 2.1-.5c.9.3 1.9.6 2.9.7a2 2 0 0 1 1.7 2z"></path></svg>01 48 92 42 42</a>
+          <div style="margin-top: 16px;">
+            <button onClick="{{ navContact }}" style="padding: 12px 22px; background: #FFFFFF; color: #0B2B45; border: none; border-radius: 99px; font-size: 14px; font-weight: 700; cursor: pointer; transition: all .2s;" style-hover="background: #DCEBF7;">Nous contacter</button>
+          </div>
+        </div>
+
+        <div>
+          <h3 style="margin: 0 0 16px; font-size: 13px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: #8FC1E8;">Horaires de l'Hôtel de Ville</h3>
+          <ul style="margin: 0; padding: 0; list-style: none; font-size: 14.5px; line-height: 2; color: rgba(255,255,255,.82);">
+            <li style="display: flex; justify-content: space-between; gap: 12px;"><span>Lun · Mer · Jeu · Ven</span><span style="color: #FFFFFF; font-weight: 600;">8h45–12h · 13h30–17h15</span></li>
+            <li style="display: flex; justify-content: space-between; gap: 12px;"><span>Mardi</span><span style="color: #FFFFFF; font-weight: 600;">13h30–17h15</span></li>
+            <li style="display: flex; justify-content: space-between; gap: 12px;"><span>Samedi <span style="font-size: 12.5px;">(Guichet unique)</span></span><span style="color: #FFFFFF; font-weight: 600;">9h–11h45</span></li>
+          </ul>
+          <h3 style="margin: 22px 0 12px; font-size: 13px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: #8FC1E8;">Les sites de Thiais</h3>
+          <ul style="margin: 0; padding: 0; list-style: none; font-size: 14.5px; line-height: 2.1;">
+            <li><a href="#" onClick="{{ navEspaceCitoyens }}" style="color: rgba(255,255,255,.86);" style-hover="color: #FFFFFF;">Espace citoyens ↗</a></li>
+            <li><a href="#" onClick="{{ navBilletterie }}" style="color: rgba(255,255,255,.86);" style-hover="color: #FFFFFF;">Billetterie en ligne ↗</a></li>
+            <li><a href="#" onClick="{{ navMediatheque }}" style="color: rgba(255,255,255,.86);" style-hover="color: #FFFFFF;">Médiathèque municipale ↗</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 style="margin: 0 0 10px; font-size: 13px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: #8FC1E8;">Newsletter</h3>
+          <p style="margin: 0 0 14px; font-size: 14.5px; line-height: 1.6; color: rgba(255,255,255,.82);">Toute l'actu de la commune, une fois par mois, dans votre boîte mail.</p>
+          <sc-if value="{{ newsletterIdle }}" hint-placeholder-val="{{ true }}">
+            <form onSubmit="{{ newsletterSubmit }}" style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <input type="email" required="required" value="{{ newsletterEmail }}" onChange="{{ newsletterChange }}" placeholder="votre@email.fr" aria-label="Votre adresse e-mail" style="flex: 1; min-width: 170px; padding: 12px 16px; border-radius: 10px; border: 1px solid rgba(255,255,255,.25); background: rgba(255,255,255,.08); color: #FFFFFF; font-size: 14.5px; font-family: inherit; outline: none;" />
+              <button type="submit" style="padding: 12px 20px; background: #0E64A5; color: #FFFFFF; border: none; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; transition: background .2s;" style-hover="background: #1573BA;">S'abonner</button>
+            </form>
+          </sc-if>
+          <sc-if value="{{ newsletterDone }}" hint-placeholder-val="{{ false }}">
+            <div style="display: flex; gap: 10px; align-items: flex-start; background: rgba(255,255,255,.1); border: 1px solid rgba(143,193,232,.4); border-radius: 10px; padding: 13px 15px; font-size: 14px; line-height: 1.5;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8FC1E8" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 1px;"><path d="M4 12.5l5 5L20 6.5"></path></svg>Merci ! Un e-mail de confirmation vient de vous être envoyé.</div>
+          </sc-if>
+          <p style="margin: 10px 0 0; font-size: 12px; color: rgba(255,255,255,.55);">Gérée via Brevo · Désinscription à tout moment · <a href="#" onClick="{{ navRgpd }}" style="color: rgba(255,255,255,.7); text-decoration: underline;">Politique de confidentialité</a></p>
+          <h3 style="margin: 22px 0 10px; font-size: 13px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: #8FC1E8;">L'application mobile</h3>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <button onClick="{{ navAppStore }}" style="padding: 9px 16px; background: rgba(255,255,255,.1); color: #FFFFFF; border: 1px solid rgba(255,255,255,.3); border-radius: 9px; font-size: 13px; font-weight: 700; cursor: pointer;" style-hover="background: rgba(255,255,255,.2);"> App Store</button>
+            <button onClick="{{ navPlayStore }}" style="padding: 9px 16px; background: rgba(255,255,255,.1); color: #FFFFFF; border: 1px solid rgba(255,255,255,.3); border-radius: 9px; font-size: 13px; font-weight: 700; cursor: pointer;" style-hover="background: rgba(255,255,255,.2);">▷ Google Play</button>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top: 44px; padding-top: 22px; border-top: 1px solid rgba(255,255,255,.14); display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+        <nav aria-label="Liens légaux" style="display: flex; gap: 6px 22px; flex-wrap: wrap; font-size: 13.5px;">
+          <a href="#" onClick="{{ navLegal }}" style="color: rgba(255,255,255,.72);" style-hover="color: #FFFFFF;">Mentions légales</a>
+          <a href="#" onClick="{{ navRgpd }}" style="color: rgba(255,255,255,.72);" style-hover="color: #FFFFFF;">RGPD</a>
+          <a href="#" onClick="{{ navA11yDecl }}" style="color: rgba(255,255,255,.72);" style-hover="color: #FFFFFF;">Accessibilité</a>
+          <a href="#" onClick="{{ navSitemap }}" style="color: rgba(255,255,255,.72);" style-hover="color: #FFFFFF;">Plan du site</a>
+          <a href="#" onClick="{{ navCredits }}" style="color: rgba(255,255,255,.72);" style-hover="color: #FFFFFF;">Crédits</a>
+          <a href="#" onClick="{{ navJobs }}" style="color: rgba(255,255,255,.72);" style-hover="color: #FFFFFF;">Recrutement</a>
+        </nav>
+        <div style="display: flex; align-items: center; gap: 10px; font-size: 13px; color: rgba(255,255,255,.55);">
+          <svg width="15" height="15" viewBox="0 0 64 64" fill="none" stroke="#8FC1E8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M32 6 C27 15 25 21 25 28 C25 36 29 42 32 44 C35 42 39 36 39 28 C39 21 37 15 32 6 Z"></path><path d="M21 21 C14 25 11 31 13 37 C15 42 20 44 25 42"></path><path d="M43 21 C50 25 53 31 51 37 C49 42 44 44 39 42"></path><path d="M23 48 L41 48"></path></svg>
+          © 2026 Ville de Thiais
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ══ MENU OVERLAY (aperçu M2 : déploiement gauche → droite) ══ -->
+  <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="Menu" style="position: fixed; inset: 0; z-index: 200;">
+      <div onClick="{{ closeMenu }}" style="position: absolute; inset: 0; background: rgba(11,43,69,.5); backdrop-filter: blur(3px);"></div>
+      <div role="dialog" aria-label="Menu principal" style="position: absolute; top: 0; left: 0; bottom: 0; width: min(480px, 94vw); background: #FFFFFF; box-shadow: 24px 0 64px rgba(11,43,69,.28); display: flex; flex-direction: column; animation: slideRight .38s cubic-bezier(.22,.8,.3,1);">
+        <div style="display: flex; align-items: center; gap: 14px; padding: 18px 22px; border-bottom: 1px solid #E3EEF7;">
+          <img src="assets/logo-thiais.jpg" alt="" width="40" height="40" style="border-radius: 8px;" />
+          <span style="font-size: 16px; font-weight: 800; color: #0B2B45; flex: 1;">Ville de Thiais</span>
+          <button aria-label="Fermer le menu" onClick="{{ closeMenu }}" style="display: flex; align-items: center; gap: 8px; background: #EDF4FA; border: none; border-radius: 99px; padding: 10px 16px; cursor: pointer; color: #0B2B45; font-size: 14px; font-weight: 700; transition: background .2s;" style-hover="background: #DCEBF7;">Fermer ✕</button>
+        </div>
+        <div style="padding: 16px 22px 8px;">
+          <div style="display: flex; align-items: center; gap: 9px; background: #EDF4FA; border-radius: 12px; padding: 12px 16px;">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#0E64A5" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+            <input type="search" placeholder="Rechercher une démarche, une page…" aria-label="Rechercher" style="border: none; background: transparent; outline: none; font-size: 15.5px; font-family: inherit; color: #0B2B45; width: 100%;" />
+          </div>
+        </div>
+        <nav aria-label="Rubriques" style="flex: 1; overflow-y: auto; padding: 8px 12px 20px;">
+          <sc-for list="{{ menuSections }}" as="m" hint-placeholder-count="5">
+            <div style="border-bottom: 1px solid #EFF5FA;">
+              <button onClick="{{ m.toggle }}" aria-expanded="{{ m.open }}" style="width: 100%; display: flex; align-items: center; gap: 14px; padding: 17px 12px; background: none; border: none; cursor: pointer; text-align: left; border-radius: 12px; transition: background .2s;" style-hover="background: #F4F9FC;">
+                <span style="flex: 1; font-size: 20px; font-weight: 800; letter-spacing: -.015em; color: {{ m.titleColor }};">{{ m.label }}</span>
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#0E64A5" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="transform: {{ m.chev }}; transition: transform .25s;"><path d="M6 9l6 6 6-6"></path></svg>
+              </button>
+              <sc-if value="{{ m.open }}" hint-placeholder-val="{{ false }}">
+                <ul style="margin: 0; padding: 2px 12px 16px 14px; list-style: none; display: flex; flex-direction: column; gap: 2px;">
+                  <sc-for list="{{ m.children }}" as="c" hint-placeholder-count="4">
+                    <li><a href="#" onClick="{{ c.go }}" style="display: block; padding: 9px 12px; font-size: 16px; font-weight: 500; color: #33475B; border-radius: 9px; transition: all .15s;" style-hover="background: #EDF4FA; color: #0E64A5; padding-left: 18px;">{{ c.label }}</a></li>
+                  </sc-for>
+                </ul>
+              </sc-if>
+            </div>
+          </sc-for>
+        </nav>
+        <div style="padding: 16px 22px 20px; border-top: 1px solid #E3EEF7; display: flex; gap: 14px; align-items: center;">
+          <button onClick="{{ navContact }}" style="padding: 11px 20px; background: #0E64A5; color: #FFFFFF; border: none; border-radius: 99px; font-size: 14px; font-weight: 700; cursor: pointer;" style-hover="background: #0A4A7C;">Nous contacter</button>
+          <span style="font-size: 13px; color: #64788A;">Standard : 01 48 92 42 42</span>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ══ POP-UP APP (encart programmable) ══ -->
+  <sc-if value="{{ appPopupVisible }}" hint-placeholder-val="{{ false }}">
+    <div role="dialog" aria-label="Téléchargez l'application" style="position: fixed; left: 20px; bottom: 20px; z-index: 150; width: min(340px, calc(100vw - 40px)); background: #FFFFFF; border: 1px solid #D8E4EE; border-radius: 18px; box-shadow: 0 24px 60px rgba(11,43,69,.24); padding: 18px; animation: popIn .35s cubic-bezier(.22,.8,.3,1);">
+      <button aria-label="Fermer" onClick="{{ closeAppPopup }}" style="position: absolute; top: 10px; right: 10px; width: 30px; height: 30px; background: #EDF4FA; border: none; border-radius: 99px; cursor: pointer; color: #0B2B45; font-size: 13px;" style-hover="background: #DCEBF7;">✕</button>
+      <div style="display: flex; gap: 14px; align-items: center; margin-bottom: 12px;">
+        <img src="https://neocitybacko.s3.eu-west-1.amazonaws.com/clients/64abcbd6d1bcd200133ca1f3/app/d5334fc9-bd1b-4190-afc4-4cac92734895.png" alt="" width="52" height="52" style="width: 52px; height: 52px; border-radius: 13px; box-shadow: 0 8px 20px rgba(11,43,69,.18); background: #EDF4FA;" />
+        <div>
+          <div style="font-size: 15.5px; font-weight: 800; color: #0B2B45; line-height: 1.25;">Ville de Thiais</div>
+          <div style="font-size: 13px; color: #64788A;">L'application officielle — gratuite</div>
+        </div>
+      </div>
+      <p style="margin: 0 0 14px; font-size: 14px; line-height: 1.55; color: #33475B;">Alertes, signalements, actualités et démarches, où que vous soyez.</p>
+      <div style="display: flex; gap: 8px;">
+        <button onClick="{{ navAppStore }}" style="flex: 1; padding: 11px 10px; background: #0E64A5; color: #FFFFFF; border: none; border-radius: 10px; font-size: 13.5px; font-weight: 700; cursor: pointer;" style-hover="background: #0A4A7C;"> App Store</button>
+        <button onClick="{{ navPlayStore }}" style="flex: 1; padding: 11px 10px; background: #EDF4FA; color: #0B2B45; border: none; border-radius: 10px; font-size: 13.5px; font-weight: 700; cursor: pointer;" style-hover="background: #DCEBF7;">▷ Google Play</button>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ══ CHAT THIAIS GPT ══ -->
+  <div data-screen-label="Chat Thiais GPT" style="position: fixed; right: 20px; bottom: 20px; z-index: 160; display: flex; flex-direction: column; align-items: flex-end; gap: 14px;">
+    <sc-if value="{{ chatOpen }}" hint-placeholder-val="{{ false }}">
+      <div role="dialog" aria-label="Assistant Thiais GPT" style="width: min(380px, calc(100vw - 40px)); height: min(540px, calc(100vh - 130px)); background: #FFFFFF; border-radius: 20px; box-shadow: 0 30px 80px rgba(11,43,69,.32); display: flex; flex-direction: column; overflow: hidden; border: 1px solid #D8E4EE; animation: popIn .3s cubic-bezier(.22,.8,.3,1);">
+        <div style="background: #0B2B45; padding: 16px 18px; display: flex; align-items: center; gap: 12px;">
+          <span style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 99px; background: #0E64A5; flex-shrink: 0;"><svg width="21" height="21" viewBox="0 0 64 64" fill="none" stroke="#FFFFFF" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M32 6 C27 15 25 21 25 28 C25 36 29 42 32 44 C35 42 39 36 39 28 C39 21 37 15 32 6 Z"></path><path d="M21 21 C14 25 11 31 13 37 C15 42 20 44 25 42"></path><path d="M43 21 C50 25 53 31 51 37 C49 42 44 44 39 42"></path><path d="M23 48 L41 48"></path></svg></span>
+          <div style="flex: 1; line-height: 1.3;">
+            <div style="font-size: 15.5px; font-weight: 800; color: #FFFFFF;">Thiais GPT</div>
+            <div style="font-size: 12.5px; color: #8FC1E8; display: flex; align-items: center; gap: 6px;"><span style="width: 7px; height: 7px; border-radius: 99px; background: #4ADE80; display: inline-block;"></span>Assistant de la Ville — répond 24h/24</div>
+          </div>
+          <button aria-label="Fermer le chat" onClick="{{ toggleChat }}" style="background: rgba(255,255,255,.12); border: none; color: #FFFFFF; width: 32px; height: 32px; border-radius: 99px; cursor: pointer; font-size: 14px;" style-hover="background: rgba(255,255,255,.25);">✕</button>
+        </div>
+        <div style="background: #EDF4FA; padding: 8px 18px; font-size: 11.5px; color: #64788A; border-bottom: 1px solid #E3EEF7;">Réponses générées par IA, à titre indicatif — vérifiez auprès des services municipaux.</div>
+        <div style="flex: 1; overflow-y: auto; padding: 18px 16px; display: flex; flex-direction: column; gap: 12px; background: #F7FBFD;">
+          <div style="display: contents;">{{ chatListAnchor }}</div>
+          <sc-for list="{{ chatMsgs }}" as="msg" hint-placeholder-count="1">
+            <sc-if value="{{ msg.isBot }}" hint-placeholder-val="{{ true }}">
+              <div style="display: flex; gap: 9px; align-items: flex-end; max-width: 88%;">
+                <span style="display: flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 99px; background: #0E64A5; flex-shrink: 0;"><svg width="14" height="14" viewBox="0 0 64 64" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M32 6 C27 15 25 21 25 28 C25 36 29 42 32 44 C35 42 39 36 39 28 C39 21 37 15 32 6 Z"></path><path d="M23 48 L41 48"></path></svg></span>
+                <div style="background: #FFFFFF; border: 1px solid #E3EEF7; border-radius: 16px 16px 16px 5px; padding: 11px 14px; font-size: 14.5px; line-height: 1.55; color: #33475B; white-space: pre-line;">{{ msg.text }}</div>
+              </div>
+            </sc-if>
+            <sc-if value="{{ msg.isUser }}" hint-placeholder-val="{{ false }}">
+              <div style="align-self: flex-end; max-width: 85%; background: #0E64A5; color: #FFFFFF; border-radius: 16px 16px 5px 16px; padding: 11px 14px; font-size: 14.5px; line-height: 1.55;">{{ msg.text }}</div>
+            </sc-if>
+          </sc-for>
+          <sc-if value="{{ chatTyping }}" hint-placeholder-val="{{ false }}">
+            <div style="display: flex; gap: 9px; align-items: flex-end;">
+              <span style="display: flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 99px; background: #0E64A5; flex-shrink: 0;"><svg width="14" height="14" viewBox="0 0 64 64" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M32 6 C27 15 25 21 25 28 C25 36 29 42 32 44 C35 42 39 36 39 28 C39 21 37 15 32 6 Z"></path><path d="M23 48 L41 48"></path></svg></span>
+              <div style="background: #FFFFFF; border: 1px solid #E3EEF7; border-radius: 16px 16px 16px 5px; padding: 14px 16px; display: flex; gap: 5px;">
+                <span style="width: 7px; height: 7px; border-radius: 99px; background: #0E64A5; animation: typingDot 1.1s infinite;"></span>
+                <span style="width: 7px; height: 7px; border-radius: 99px; background: #0E64A5; animation: typingDot 1.1s .18s infinite;"></span>
+                <span style="width: 7px; height: 7px; border-radius: 99px; background: #0E64A5; animation: typingDot 1.1s .36s infinite;"></span>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+        <sc-if value="{{ showQuickReplies }}" hint-placeholder-val="{{ true }}">
+          <div style="padding: 10px 14px 4px; display: flex; gap: 7px; flex-wrap: wrap; background: #F7FBFD;">
+            <sc-for list="{{ quickReplies }}" as="qr" hint-placeholder-count="3">
+              <button onClick="{{ qr.send }}" style="padding: 8px 13px; background: #FFFFFF; border: 1px solid #A9C9E3; color: #0E64A5; border-radius: 99px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all .2s;" style-hover="background: #EDF4FA; border-color: #0E64A5;">{{ qr.label }}</button>
+            </sc-for>
+          </div>
+        </sc-if>
+        <form onSubmit="{{ chatSubmit }}" style="display: flex; gap: 9px; padding: 12px 14px; background: #FFFFFF; border-top: 1px solid #E3EEF7;">
+          <input type="text" value="{{ chatInput }}" onChange="{{ chatInputChange }}" placeholder="Écrivez votre question…" aria-label="Votre message" style="flex: 1; border: 1px solid #D8E4EE; border-radius: 99px; padding: 11px 17px; font-size: 14.5px; font-family: inherit; outline: none; color: #0B2B45; min-width: 0;" style-focus="border-color: #0E64A5;" />
+          <button type="submit" aria-label="Envoyer" style="width: 44px; height: 44px; border-radius: 99px; background: #0E64A5; color: #FFFFFF; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background .2s;" style-hover="background: #0A4A7C;"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M3.4 20.6 21.8 12 3.4 3.4l.01 6.6L15 12 3.4 14z"></path></svg></button>
+        </form>
+      </div>
+    </sc-if>
+    <button onClick="{{ toggleChat }}" aria-label="Ouvrir l'assistant Thiais GPT" style="display: flex; align-items: center; gap: 11px; padding: 13px 20px 13px 15px; background: #0B2B45; color: #FFFFFF; border: none; border-radius: 99px; cursor: pointer; box-shadow: 0 14px 36px rgba(11,43,69,.3); font-size: 15px; font-weight: 700; transition: all .25s ease; animation: pulseRing 3s 2s 3;" style-hover="transform: translateY(-2px); background: #0E64A5;">
+      <span style="display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 99px; background: #0E64A5;"><svg width="17" height="17" viewBox="0 0 64 64" fill="none" stroke="#FFFFFF" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"><path d="M32 6 C27 15 25 21 25 28 C25 36 29 42 32 44 C35 42 39 36 39 28 C39 21 37 15 32 6 Z"></path><path d="M21 21 C14 25 11 31 13 37 C15 42 20 44 25 42"></path><path d="M43 21 C50 25 53 31 51 37 C49 42 44 44 39 42"></path><path d="M23 48 L41 48"></path></svg></span>
+      {{ chatBtnLabel }}
+    </button>
+  </div>
+
+  <!-- ══ TOAST navigation maquette ══ -->
+  <sc-if value="{{ toastVisible }}" hint-placeholder-val="{{ false }}">
+    <div role="status" style="position: fixed; bottom: 26px; left: 50%; transform: translateX(-50%); z-index: 250; background: #0B2B45; color: #FFFFFF; padding: 13px 22px; border-radius: 99px; font-size: 14px; font-weight: 600; box-shadow: 0 16px 44px rgba(11,43,69,.35); animation: popIn .28s ease; display: flex; align-items: center; gap: 10px; max-width: calc(100vw - 48px);">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8FC1E8" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v4"></path><circle cx="12" cy="16" r=".5" fill="#8FC1E8"></circle></svg>
+      <span>{{ toastMsg }}</span>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;afficherAlerte&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Démo&quot;}, &quot;afficherPopupApp&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Démo&quot;}, &quot;agendaParDefaut&quot;: {&quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;weekend&quot;, &quot;soir&quot;, &quot;demain&quot;, &quot;semaine&quot;, &quot;mois&quot;], &quot;default&quot;: &quot;weekend&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Démo&quot;}}">
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    let seen = false;
+    try { seen = !!window.sessionStorage.getItem('thiais-maquette-loaded'); } catch (e) {}
+    this.state = {
+      showLoader: !seen, loaderOpacity: 1,
+      navLoading: false, toastMsg: null,
+      scrolled: false, isDesktop: window.innerWidth > 860,
+      menuOpen: false, openSection: 0,
+      a11yOpen: false, zoom: 1, contrast: false,
+      alertClosed: false,
+      profile: 'tous', agendaFilter: null,
+      chatOpen: false, chatTyping: false, chatInput: '', chatMsgs: [
+        { isBot: true, isUser: false, text: "Bonjour ! Je suis Thiais GPT, l'assistant numérique de la Ville.\nPosez-moi une question sur vos démarches, les horaires ou l'agenda." }
+      ],
+      appPopupClosed: false, appPopupShown: false,
+      newsletterEmail: '', newsletterDone: false
+    };
+    this.chatListRef = React.createRef();
+  }
+
+  componentDidMount() {
+    this._onScroll = () => this.setState({ scrolled: window.scrollY > 8 });
+    window.addEventListener('scroll', this._onScroll, { passive: true });
+    this._onResize = () => this.setState({ isDesktop: window.innerWidth > 860 });
+    window.addEventListener('resize', this._onResize);
+    this._onKey = (e) => { if (e.key === 'Escape') this.setState({ menuOpen: false, chatOpen: false, a11yOpen: false }); };
+    window.addEventListener('keydown', this._onKey);
+    // masquer proprement les images distantes qui échouent
+    this._onImgErr = (e) => { const t = e.target; if (t && t.tagName === 'IMG') t.style.opacity = '0'; };
+    document.addEventListener('error', this._onImgErr, true);
+    // loader lys : une fois par session
+    if (this.state.showLoader) {
+      setTimeout(() => this.setState({ loaderOpacity: 0 }), 1250);
+      setTimeout(() => {
+        this.setState({ showLoader: false });
+        try { window.sessionStorage.setItem('thiais-maquette-loaded', '1'); } catch (e) {}
+      }, 1700);
+    }
+    // pop-up app programmable
+    this._popTimer = setTimeout(() => this.setState({ appPopupShown: true }), 9000);
+    // révélation douce des sections
+    setTimeout(() => {
+      const els = document.querySelectorAll('[data-reveal]');
+      if (!('IntersectionObserver' in window)) return;
+      this._io = new IntersectionObserver((entries) => {
+        entries.forEach((en) => {
+          if (en.isIntersecting) { en.target.style.opacity = '1'; en.target.style.transform = 'none'; this._io.unobserve(en.target); }
+        });
+      }, { threshold: 0.08 });
+      els.forEach((el) => {
+        const r = el.getBoundingClientRect();
+        if (r.top < window.innerHeight * 0.9) return;
+        el.style.opacity = '0'; el.style.transform = 'translateY(18px)';
+        el.style.transition = 'opacity .6s ease, transform .6s ease';
+        this._io.observe(el);
+      });
+    }, 60);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this._onScroll);
+    window.removeEventListener('resize', this._onResize);
+    window.removeEventListener('keydown', this._onKey);
+    document.removeEventListener('error', this._onImgErr, true);
+    clearTimeout(this._popTimer);
+    if (this._io) this._io.disconnect();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    // Le runtime n'appelle componentDidUpdate qu'avec prevProps ; on reconstitue
+    // l'état précédent via une trace d'instance pour conserver la détection de changement.
+    prevState = prevState || this._prevDcState || {};
+    if (prevState.chatMsgs !== this.state.chatMsgs || prevState.chatTyping !== this.state.chatTyping) {
+      const el = this.chatListRef.current && this.chatListRef.current.parentElement;
+      if (el) el.scrollTop = el.scrollHeight;
+    }
+    const lock = this.state.menuOpen;
+    document.body.style.overflow = lock ? 'hidden' : '';
+    this._prevDcState = this.state;
+  }
+
+  // ─── Navigation simulée : barre de progression + toast (CCTP : indicateur de chargement)
+  demoNav(label) {
+    this.setState({ navLoading: true, menuOpen: false });
+    clearTimeout(this._navT1); clearTimeout(this._navT2);
+    this._navT1 = setTimeout(() => this.setState({ navLoading: false, toastMsg: 'Écran « ' + label + ' » — présenté dans la maquette complète' }), 1150);
+    this._navT2 = setTimeout(() => this.setState({ toastMsg: null }), 4200);
+  }
+  nav(label) { return (e) => { if (e && e.preventDefault) e.preventDefault(); this.demoNav(label); }; }
+  navTo(url) { return (e) => { if (e && e.preventDefault) e.preventDefault(); this.setState({ navLoading: true, menuOpen: false }); setTimeout(() => { window.location.href = url; }, 450); }; }
+
+  // ─── Chat
+  botAnswer(q) {
+    const t = q.toLowerCase();
+    if (t.includes('piscine')) return "La piscine municipale (162 avenue du Général de Gaulle) est ouverte tous les jours cet été.\nEn période de canicule, les horaires sont étendus jusqu'à 21h.\n→ Accès rapide « Piscine municipale » pour les créneaux détaillés.";
+    if (t.includes('identité') || t.includes('passeport') || t.includes('carte')) return "Les titres d'identité se font sur rendez-vous au Guichet unique de l'Hôtel de Ville (samedi 9h–11h45 inclus).\nVous pouvez prendre rendez-vous en ligne via l'Espace citoyens, ou appeler le 01 48 92 42 42.";
+    if (t.includes('cantine') || t.includes('menu')) return "Les menus de la restauration municipale sont publiés chaque semaine.\nCette semaine : menus adaptés « repas froids » en raison de la canicule.\n→ Accès rapide « Menus cantine ».";
+    if (t.includes('pharmacie')) return "Pour connaître la pharmacie de garde ce week-end, consultez la page « Pharmacies de garde » ou appelez le 3237 (numéro national, 24h/24).";
+    if (t.includes('déchet') || t.includes('encombrant')) return "Les encombrants sont collectés chaque 2e mercredi du mois (secteur pavillonnaire) et sur rendez-vous pour les résidences.\n→ Accès rapide « Gestion des déchets » pour votre secteur.";
+    return "Je n'ai pas encore de réponse précise à cette question.\nLe standard de la mairie (01 48 92 42 42) ou le formulaire de contact pourront vous aider.\nPuis-je vous orienter vers une démarche en ligne ?";
+  }
+  sendChat(text) {
+    if (!text.trim()) return;
+    const msgs = this.state.chatMsgs.concat([{ isBot: false, isUser: true, text: text.trim() }]);
+    this.setState({ chatMsgs: msgs, chatInput: '', chatTyping: true });
+    clearTimeout(this._chatT);
+    this._chatT = setTimeout(() => {
+      this.setState({
+        chatTyping: false,
+        chatMsgs: this.state.chatMsgs.concat([{ isBot: true, isUser: false, text: this.botAnswer(text) }])
+      });
+    }, 1300);
+  }
+
+  renderVals() {
+    const s = this.state;
+    const showAlert = (this.props.afficherAlerte ?? true) && !s.alertClosed;
+    const defaultAgenda = this.props.agendaParDefaut ?? 'weekend';
+    const agendaFilter = s.agendaFilter || defaultAgenda;
+
+    // ─── Icônes trait fin (24px)
+    const I = (paths) => React.createElement('svg', { width: 26, height: 26, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 1.7, strokeLinecap: 'round', strokeLinejoin: 'round' }, paths.map((d, i) => React.createElement('path', { key: i, d })));
+    const palette = ['#0E64A5', '#3E8FCC', '#0A4A7C'];
+    const bgs = ['#EDF4FA', '#F0F7FC', '#E8F0F7'];
+    const qlDefs = [
+      ['Démarches en ligne', ['M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5z', 'M14 3v5h5', 'M9 14.5l2 2 4-4.5']],
+      ['Horaires', ['M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z', 'M12 7v5l3.2 2.6']],
+      ['Piscine municipale', ['M3 15c2-2.2 4-2.2 6 0s4 2.2 6 0 4-2.2 6 0', 'M3 19.5c2-2.2 4-2.2 6 0s4 2.2 6 0 4-2.2 6 0', 'M8.5 5.5a2 2 0 1 0 0 4 2 2 0 0 0 0-4z']],
+      ['Menus cantine', ['M7 3v7a2.5 2.5 0 0 0 2.5 2.5V21', 'M12 3v18M7 3v4M12 7V3', 'M17 3c-1.8 1.8-1.8 5.2 0 7v11']],
+      ['Billetterie', ['M4 8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v1.5a2.5 2.5 0 0 0 0 5V16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-1.5a2.5 2.5 0 0 0 0-5z', 'M14 6v2.2M14 11v2M14 15.8V18']],
+      ['Portail famille', ['M9 5a3 3 0 1 0 0 6 3 3 0 0 0 0-6z', 'M3.5 20c.4-3.4 2.6-5.5 5.5-5.5s5.1 2.1 5.5 5.5', 'M16.5 7a2.4 2.4 0 1 1 0 4.8', 'M17.5 14.6c1.9.5 3 2 3.2 4.4']],
+      ['Médiathèque municipale', ['M12 6.5C10 5 7.5 4.5 4 4.5v14c3.5 0 6 .5 8 2 2-1.5 4.5-2 8-2v-14c-3.5 0-6 .5-8 2z', 'M12 6.5v14']],
+      ['Annuaire', ['M6 3h13a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z', 'M12 8a2.4 2.4 0 1 0 0 4.8A2.4 2.4 0 0 0 12 8z', 'M8.2 17.5c.5-2 2-3.2 3.8-3.2s3.3 1.2 3.8 3.2']],
+      ['Mes élus', ['M3.5 9.5 12 4l8.5 5.5', 'M5 9.5V19M9.5 9.5V19M14.5 9.5V19M19 9.5V19', 'M3.5 19h17', 'M3.5 21.5h17']],
+      ['Gestion des déchets', ['M4.5 7h15', 'M9.5 7V5a1.5 1.5 0 0 1 1.5-1.5h2A1.5 1.5 0 0 1 14.5 5v2', 'M6.5 7l.9 12a2 2 0 0 0 2 1.9h5.2a2 2 0 0 0 2-1.9l.9-12', 'M10 11.5v5.5M14 11.5v5.5']],
+      ['Agenda', ['M5 6h14a1.5 1.5 0 0 1 1.5 1.5V19A1.5 1.5 0 0 1 19 20.5H5A1.5 1.5 0 0 1 3.5 19V7.5A1.5 1.5 0 0 1 5 6z', 'M3.5 10.5h17', 'M8 3.5V7M16 3.5V7', 'M8 14.5h3']],
+      ['Thiais Magazine', ['M4 6a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v14H6a2 2 0 0 1-2-2z', 'M17 8.5h2.5V18a2 2 0 0 1-2 2H16', 'M7.5 8.5h6M7.5 12h6M7.5 15.5h3.5']],
+      ['Pharmacies de garde', ['M12 3.5a8.5 8.5 0 1 0 0 17 8.5 8.5 0 0 0 0-17z', 'M12 8v8M8 12h8']]
+    ];
+    const quickLinks = qlDefs.map((d, i) => {
+      const hero = i === 0;
+      return {
+        label: d[0], icon: I(d[1]), go: this.nav(d[0]), delay: (i * 45) + 'ms',
+        pillBg: hero ? '#0E64A5' : '#FFFFFF', pillBorder: hero ? '#0E64A5' : '#D8E4EE',
+        labelColor: hero ? '#FFFFFF' : '#0B2B45',
+        bg: hero ? 'rgba(255,255,255,.18)' : bgs[i % 3], color: hero ? '#FFFFFF' : palette[i % 3],
+        hoverBg: hero ? '#0A4A7C' : '#EDF4FA'
+      };
+    });
+
+    // ─── Actualités + profils
+    const allNews = [
+      { cat: 'Santé · Prévention', title: 'Vigilance rouge canicule : la Ville se mobilise pour les plus fragiles', excerpt: "Le Val-de-Marne est placé en vigilance rouge. Registre des personnes vulnérables, lieux frais ouverts, horaires adaptés des services : retrouvez toutes les mesures mises en place et les bons réflexes à adopter.", date: 'Publié le 11 juillet 2026', img: 'https://www.ville-thiais.fr/wp-content/uploads/2026/05/canicule-seniors-600x285.jpg', profils: ['parent', 'senior', 'jeune', 'nouveau'] },
+      { cat: 'Sport', title: 'Canicule : la piscine municipale étend ses horaires', excerpt: "Ouverture prolongée jusqu'à 21h pendant l'alerte, créneaux réservés aux seniors le matin.", date: '10 juillet 2026', img: 'https://www.ville-thiais.fr/wp-content/uploads/2023/08/piscine-265x260.jpg', profils: ['jeune', 'parent', 'senior'] },
+      { cat: 'Prévention', title: 'Moustique tigre : les bons gestes pour être plus tranquille', excerpt: "L'Agence Régionale de Santé rappelle les gestes simples pour limiter sa prolifération cet été.", date: '8 juillet 2026', img: 'https://www.ville-thiais.fr/wp-content/uploads/2023/08/moustique-tigre-265x260.jpg', profils: ['parent', 'senior', 'nouveau'] },
+      { cat: 'Éducation', title: 'Inscriptions scolaires 2026-2027 : dernière ligne droite', excerpt: "Les inscriptions pour la rentrée se poursuivent au Guichet unique et sur l'Espace citoyens.", date: '4 juillet 2026', img: 'https://www.ville-thiais.fr/wp-content/uploads/2026/07/27-juin-2026-Remise-des-prix-aux-CM2-HP-31-205x160.png', profils: ['parent', 'nouveau'] },
+      { cat: 'Jeunesse', title: 'Soirée esport au PIJ : création de jeu vidéo et tournois', excerpt: "Le Point Information Jeunesse a réuni les 12-25 ans autour du jeu vidéo, en route vers La Scène Digitale.", date: '5 juillet 2026', img: 'https://www.ville-thiais.fr/wp-content/uploads/2026/07/03-juillet-2026-PIJ-Soiree-esport-Creation-jeu-video-et-jeu-de-societe-RF-12-410x320.jpg', profils: ['jeune'] },
+      { cat: 'Travaux', title: 'Parc des Terrasses du Soleil : le réaménagement se poursuit', excerpt: "Nouvelles plantations, jeux pour enfants et îlots de fraîcheur : le point sur le chantier de l'été.", date: '2 juillet 2026', img: 'https://www.ville-thiais.fr/wp-content/uploads/2025/06/new_parc_terrasses_du_soleil-350x262.jpg', profils: ['parent', 'senior', 'jeune', 'nouveau'] }
+    ];
+    const filteredNews = s.profile === 'tous' ? allNews : allNews.filter((n) => n.profils.includes(s.profile));
+    const mkNews = (n) => Object.assign({}, n, { go: this.navTo('article.html') });
+    const featured = mkNews(filteredNews[0] || allNews[0]);
+    const newsGrid = filteredNews.slice(1, 5).map((n, i) => Object.assign(mkNews(n), { delay: (i * 70) + 'ms' }));
+
+    const profileDefs = [['tous', 'Tous'], ['parent', 'Parent'], ['senior', 'Senior'], ['jeune', 'Jeune'], ['nouveau', 'Nouvel habitant']];
+    const profiles = profileDefs.map(([id, label]) => {
+      const active = s.profile === id;
+      return { label, active: active ? 'true' : 'false', bg: active ? '#0E64A5' : '#FFFFFF', color: active ? '#FFFFFF' : '#33475B', border: active ? '#0E64A5' : '#D8E4EE', select: () => this.setState({ profile: id }) };
+    });
+
+    // ─── Agenda (démo : lundi 13 juillet 2026)
+    const allEvents = [
+      { f: ['soir', 'weekend'], day: '13', month: 'Juil', cat: 'Tout public', title: 'Bal des pompiers 2026', time: 'Ce soir · 19h – 3h', place: 'Caserne de Rungis', img: 'https://www.ville-thiais.fr/wp-content/uploads/2026/06/Affiche_bal_pompiers_juillet_2026-364x212.jpg' },
+      { f: ['demain', 'weekend'], day: '14', month: 'Juil', cat: 'Spectacles & animations', title: "Feu d'artifice en musique", time: 'Demain · 23h30', place: 'Place du Général Leclerc', img: 'https://www.ville-thiais.fr/wp-content/uploads/2025/07/14-juillet-2025-Spectacle-pyromelodique-TO-32-scaled-364x212.jpg' },
+      { f: ['weekend'], day: '19', month: 'Juil', cat: 'Sport · Tout public', title: 'Retransmission de la finale de la Coupe du monde', time: 'Dimanche · dès 20h', place: "Parc de l'Europe — écran géant", img: 'https://www.ville-thiais.fr/wp-content/uploads/2026/07/retransmission_cdm_2026_couv-364x212.jpg' },
+      { f: ['weekend', 'semaine', 'mois'], day: '29', month: 'Août', cat: 'Exposition · Saison culturelle', title: 'Exposition photo du club Focale 50', time: "Jusqu'au 29 août", place: "Hall de l'Hôtel de Ville", img: 'https://www.ville-thiais.fr/wp-content/uploads/2025/08/expo_focale50-scaled-364x212.jpg' },
+      { f: ['semaine'], day: '21', month: 'Juil', cat: 'CCAS · Seniors', title: 'Randonnée douce au parc de Cluny', time: 'Mardi · dès 18h15', place: 'Parc de Cluny', img: 'https://www.ville-thiais.fr/wp-content/uploads/2026/06/ccas-randonnees-juillet-2026-affiche-A3-BD-scaled-364x212.jpg' },
+      { f: ['semaine'], day: '26', month: 'Juil', cat: "Thiais fête l'été", title: 'Animations estivales au parc', time: 'Dimanche · 14h – 20h', place: "Parc de l'Europe", img: 'https://www.ville-thiais.fr/wp-content/uploads/2026/05/animations-estivales-2026-affiche-120-x-176-364x212.jpg' },
+      { f: ['mois'], day: '16', month: 'Août', cat: 'Tout public', title: "Don du sang — collecte de l'été", time: '9h – 14h', place: 'Centre de loisirs Jules Ferry', img: 'https://www.ville-thiais.fr/wp-content/uploads/2025/07/sang-364x212.jpg' },
+      { f: ['mois'], day: '05', month: 'Sept', cat: 'Tout public', title: 'Forum des activités thiaisiennes', time: '10h – 17h', place: 'Palais Omnisports', img: 'https://www.ville-thiais.fr/wp-content/uploads/2026/04/Forum-des-activites-thiaisiennes-2026-364x212.jpg' },
+      { f: ['mois'], day: '12', month: 'Sept', cat: 'Saison culturelle · Concert', title: 'Le monde magique de Chantal Goya', time: 'Dès 21h', place: 'Palais Omnisports', img: 'https://www.ville-thiais.fr/wp-content/uploads/2026/07/chanteal_goya_thiais_couv-364x212.jpg' },
+      { f: ['mois'], day: '19', month: 'Sept', cat: 'Tout public', title: 'Journées européennes du Patrimoine', time: '14h – 16h30', place: 'Parc de Cluny', img: 'https://www.ville-thiais.fr/wp-content/uploads/2026/07/JEP26_RS-ext-16x9-1-364x212.png' },
+      { f: ['mois'], day: '17', month: 'Oct', cat: 'Sport · Loisirs', title: 'Theodasium 2026 — le week-end 100 % sport', time: 'Sam & dim · 10h – 19h', place: 'Palais Omnisports', img: 'https://www.ville-thiais.fr/wp-content/uploads/2026/07/500-flyers-15x21-theodasium-2026-364x212.jpg' },
+      { f: ['mois'], day: '06', month: 'Déc', cat: 'Sport', title: 'Corrida de Thiais 2026', time: 'Dès 9h', place: 'Départ Palais Omnisports', img: 'https://www.ville-thiais.fr/wp-content/uploads/2026/05/Corrida-de-Thiais-2026-affiche-364x212.jpg' }
+    ];
+    const filterDefs = [['weekend', 'Ce week-end'], ['soir', 'Ce soir'], ['demain', 'Demain'], ['semaine', 'La semaine prochaine'], ['mois', 'Les mois suivants']];
+    const agendaFilters = filterDefs.map(([id, label]) => {
+      const active = agendaFilter === id;
+      const count = allEvents.filter((e) => e.f.includes(id)).length;
+      return {
+        label, count: String(count), active: active ? 'true' : 'false',
+        bg: active ? '#0E64A5' : '#FFFFFF', color: active ? '#FFFFFF' : '#33475B', border: active ? '#0E64A5' : '#FFFFFF',
+        countBg: active ? 'rgba(255,255,255,.22)' : '#EDF4FA', countColor: active ? '#FFFFFF' : '#0E64A5',
+        select: () => this.setState({ agendaFilter: id })
+      };
+    });
+    const agendaIds = { 'Bal des pompiers 2026': 'bal-pompiers', "Feu d'artifice en musique": 'feu-artifice', 'Retransmission de la finale de la Coupe du monde': 'cdm-finale', 'Exposition photo du club Focale 50': 'expo-focale50', 'Randonnée douce au parc de Cluny': 'rando-cluny', 'Animations estivales au parc': 'anim-estivales', "Don du sang — collecte de l'été": 'don-sang', 'Forum des activités thiaisiennes': 'forum-activites', 'Le monde magique de Chantal Goya': 'chantal-goya', 'Journées européennes du Patrimoine': 'jep-2026', 'Theodasium 2026 — le week-end 100 % sport': 'theodasium', 'Corrida de Thiais 2026': 'corrida' };
+    const events = allEvents.filter((e) => e.f.includes(agendaFilter)).map((e, i) => Object.assign({}, e, { go: this.navTo('agenda.html' + (agendaIds[e.title] ? '#e/' + agendaIds[e.title] : '')), delay: (i * 70) + 'ms' }));
+
+    // ─── Kiosque & vidéos
+    const leaflets = [
+      { title: 'Forum de la santé 2026 — le programme', date: '19 mai 2026', img: 'https://www.ville-thiais.fr/wp-content/uploads/2026/05/Semaine-et-forum-de-la-sante-juin-2026-programme-15x21-BD-1-90x132.jpg' },
+      { title: "Médiathèque — actions culturelles de l'été", date: '6 mai 2026', img: 'https://www.ville-thiais.fr/wp-content/uploads/2026/05/mediatheque-actions-culturelles-mai-juin-juillet-2026-90x132.jpg' },
+      { title: 'Thiais Magazine n°137 — archives', date: '2 avril 2026', img: 'https://www.ville-thiais.fr/wp-content/uploads/2026/07/thiais_magazine_138-scaled-235x340.png' }
+    ].map((l, i) => Object.assign({}, l, { go: this.nav(l.title), delay: (i * 80) + 'ms' }));
+
+    const videos = [
+      { title: 'Retour sur le Festival de musique franco-américaine', meta: 'Culture · il y a 2 semaines', length: '3:24', img: 'https://www.ville-thiais.fr/wp-content/uploads/2026/07/26-juin-2026-Festival-de-musique-franco-amercaine-Swing-gum-HP-34-205x160.png' },
+      { title: 'La chorale Atout Chœur en spectacle', meta: 'Culture · il y a 2 semaines', length: '2:41', img: 'https://www.ville-thiais.fr/wp-content/uploads/2026/07/25-juin-2026-Chorale-Atout-Choeur-HP-2-410x320.png' },
+      { title: 'Les frères Jarry jouent Johnny — concert hommage', meta: 'Événement · il y a 2 semaines', length: '4:05', img: 'https://www.ville-thiais.fr/wp-content/uploads/2026/07/28-juin-2026-Les-freres-Jarry-jouent-Johnny-HP-8-205x160.png' }
+    ].map((v, i) => Object.assign({}, v, { go: this.nav(v.title), delay: (i * 80) + 'ms' }));
+
+    // ─── Menu overlay
+    const menuDefs = [
+      ['Ma mairie, ma ville', ['Découvrir Thiais', "Le Maire et l'équipe municipale", 'Grands projets — Sénia, La Scène Digitale, entrée de ville', 'Mes démarches', 'Marchés publics', 'Thiais Magazine']],
+      ['Enfance, jeunesse', ['Petite enfance', 'Vie scolaire & inscriptions', 'Restauration municipale', 'Accueils de loisirs', 'Point Information Jeunesse']],
+      ['Mon cadre de vie, ma sécurité', ['Sécurité & tranquillité', 'Mobilités & stationnement', 'Environnement', 'Gestion des déchets', 'Urbanisme & logement']],
+      ['Culture, loisirs et sport', ['Agenda', 'Saison culturelle', 'Médiathèque', 'La Micro-Folie', 'Sport & associations', 'Grands événements']],
+      ['Santé, social et solidarité', ['Pharmacies de garde', 'Professionnels de santé', 'CCAS & action sociale', 'Seniors', 'Don de sang']]
+    ];
+    const menuSections = menuDefs.map(([label, children], i) => ({
+      label,
+      titleColor: s.openSection === i ? '#0E64A5' : '#0B2B45',
+      open: s.openSection === i,
+      chev: s.openSection === i ? 'rotate(180deg)' : 'none',
+      toggle: () => this.setState({ openSection: s.openSection === i ? -1 : i }),
+      children: children.map((c) => (c === 'Agenda' ? { label: c, go: this.navTo('agenda.html') } : { label: c, go: this.nav(c) }))
+    }));
+
+    // ─── Chat
+    const chatMsgs = s.chatMsgs;
+    const quickReplies = ['Horaires de la piscine ?', "Refaire ma carte d'identité", 'Menus de la cantine'].map((label) => ({ label, send: () => this.sendChat(label) }));
+
+    return {
+      dataReady: true,
+      zoomLevel: s.zoom,
+      showLoader: s.showLoader, loaderOpacity: s.loaderOpacity,
+      navLoading: s.navLoading,
+      headerBorder: s.scrolled ? '#D8E4EE' : '#EDF4FA',
+      headerShadow: s.scrolled ? '0 6px 24px rgba(11,43,69,.08)' : 'none',
+      isDesktop: s.isDesktop, hideOnMobile: s.isDesktop ? 'flex' : 'none',
+      openMenu: () => this.setState({ menuOpen: true }), closeMenu: () => this.setState({ menuOpen: false }),
+      menuOpen: s.menuOpen, menuSections,
+      goHome: (e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); },
+      scrollAgenda: () => { const el = document.getElementById('agenda'); if (el) window.scrollTo({ top: el.offsetTop - 70, behavior: 'smooth' }); },
+      heroEventGo: this.navTo('agenda.html#e/feu-artifice'),
+      searchQ: s.searchQ || '', searchChange: (e) => this.setState({ searchQ: e.target.value }),
+      searchSubmit: (e) => { e.preventDefault(); this.demoNav('Résultats de recherche'); },
+      a11yOpen: s.a11yOpen, toggleA11y: () => this.setState({ a11yOpen: !s.a11yOpen }),
+      fontPlus: () => this.setState({ zoom: Math.min(1.35, s.zoom + 0.08) }),
+      fontMinus: () => this.setState({ zoom: Math.max(0.85, s.zoom - 0.08) }),
+      contrastLabel: s.contrast ? 'Activé' : 'Désactivé',
+      contrastBg: s.contrast ? '#0B2B45' : '#FFFFFF', contrastColor: s.contrast ? '#FFFFFF' : '#0B2B45',
+      toggleContrast: () => {
+        const on = !s.contrast; this.setState({ contrast: on });
+        let st = document.getElementById('thiais-a11y-css');
+        if (on) {
+          if (!st) { st = document.createElement('style'); st.id = 'thiais-a11y-css'; document.head.appendChild(st); }
+          st.textContent = '#thiais-root a { text-decoration: underline !important; } #thiais-root { filter: contrast(1.08); }';
+        } else if (st) { st.textContent = ''; }
+      },
+      alertVisible: showAlert, closeAlert: () => this.setState({ alertClosed: true }),
+      navAlert: this.nav('Canicule — recommandations'),
+      quickLinks, profiles, featured, newsGrid,
+      navAllNews: this.nav("Liste des actualités (tris par profil et catégories)"),
+      agendaFilters, events, navAllAgenda: this.navTo('agenda.html'),
+      leaflets, navKiosque: this.nav('Kiosque — toutes les publications'),
+      navMagRead: this.nav('Thiais Magazine n°138 — lecture Calameo'), navMagPdf: this.nav('Thiais Magazine n°138 — PDF'),
+      videos, navYoutube: this.nav('Chaîne YouTube de la Ville'),
+      navSocial: this.nav('Réseaux sociaux'), navContact: this.nav('Formulaire de contact'),
+      navEspaceCitoyens: this.nav('Espace citoyens'), navBilletterie: this.nav('Billetterie'), navMediatheque: this.nav('Médiathèque'),
+      navAppStore: this.nav('App Store — Ville de Thiais'), navPlayStore: this.nav('Google Play — Ville de Thiais'),
+      navLegal: this.nav('Mentions légales'), navRgpd: this.nav('RGPD'), navA11yDecl: this.nav("Déclaration d'accessibilité"),
+      navSitemap: this.nav('Plan du site'), navCredits: this.nav('Crédits'), navJobs: this.nav('Recrutement'),
+      newsletterIdle: !s.newsletterDone, newsletterDone: s.newsletterDone,
+      newsletterEmail: s.newsletterEmail, newsletterChange: (e) => this.setState({ newsletterEmail: e.target.value }),
+      newsletterSubmit: (e) => { e.preventDefault(); if (s.newsletterEmail.includes('@')) this.setState({ newsletterDone: true }); },
+      appPopupVisible: (this.props.afficherPopupApp ?? true) && s.appPopupShown && !s.appPopupClosed && !s.chatOpen,
+      closeAppPopup: () => this.setState({ appPopupClosed: true }),
+      chatOpen: s.chatOpen, toggleChat: () => this.setState({ chatOpen: !s.chatOpen, a11yOpen: false }),
+      chatBtnLabel: s.chatOpen ? 'Fermer' : 'Thiais GPT',
+      chatMsgs, chatTyping: s.chatTyping, showQuickReplies: s.chatOpen && chatMsgs.length < 3,
+      quickReplies, chatListAnchor: React.createElement('span', { ref: this.chatListRef }),
+      chatInput: s.chatInput, chatInputChange: (e) => this.setState({ chatInput: e.target.value }),
+      chatSubmit: (e) => { e.preventDefault(); this.sendChat(s.chatInput); },
+      toastVisible: !!s.toastMsg, toastMsg: s.toastMsg || ''
+    };
+  }
+}
+</script>
+</body>
+</html>

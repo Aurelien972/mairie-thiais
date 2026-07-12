@@ -1,0 +1,15 @@
+# Ville de Thiais — Maquette interactive (consultation 26PA12SE, critère 2.1)
+# Site 100 % statique : les pages .html sont rendues côté client par le
+# runtime Claude Design (support.js), qui charge React/ReactDOM via CDN.
+# Aucune étape de build n'est nécessaire.
+
+[build]
+  # Dossier réellement publié (site statique, sans étape de build).
+  publish = "site"
+
+# Maquette de consultation : on demande aux moteurs de recherche de ne pas
+# indexer, pour éviter toute confusion avec le site officiel de la Ville.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
