@@ -14,7 +14,7 @@ dialoguer avec le chat simulé « Thiais GPT ».
 | Accueil | `site/index.html` | Page d'accueil (M1) : accès rapides, actualités, agenda, kiosque, vidéos, menu overlay, chat « Thiais GPT ». |
 | Agenda | `site/agenda.html` | Agenda « Que faire à Thiais ? » (M4) : vue liste + fiche événement, filtres temporels et catégories. |
 | Article | `site/article.html` | Article & page type (M3) : fil d'Ariane, accordéons, bandeaux d'alerte, colonne latérale. |
-| Présentation | `site/presentation.html` | Note de présentation (format A4) reliant chaque exigence du CCTP à sa réponse dans la maquette. |
+| Présentation | `site/presentation.html` | Note de présentation (format A4) : **captures réelles** de M1→M4 dans des cadres navigateur/mobile, **pastilles CCTP annotées** et **QR codes** vers chaque écran en direct. |
 
 Les pages se lient entre elles (le logo ramène à l'accueil, boutons « Voir tout
 l'agenda », « Toutes les actualités », etc.).
