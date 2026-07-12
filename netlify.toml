@@ -1,6 +1,7 @@
 # Ville de Thiais — Maquette interactive (consultation 26PA12SE, critère 2.1)
 # Site 100 % statique : les pages .html sont rendues côté client par le
-# runtime Claude Design (support.js), qui charge React/ReactDOM via CDN.
+# runtime Claude Design (support.js). React/ReactDOM/Babel sont auto-hébergés
+# dans site/assets/vendor/ (aucune dépendance CDN au moment de la démo).
 # Aucune étape de build n'est nécessaire.
 
 [build]
@@ -13,3 +14,13 @@
   for = "/*"
   [headers.values]
     X-Robots-Tag = "noindex, nofollow"
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "SAMEORIGIN"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# Les assets (photos, captures, QR, bibliothèques) sont immuables pendant la
+# consultation : cache d'une semaine pour des scans de QR codes instantanés.
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"

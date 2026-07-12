@@ -22,16 +22,18 @@ l'agenda », « Toutes les actualités », etc.).
 ## 🏗️ Technique
 
 - **100 % statique**, rendu **côté client**. Chaque page HTML est interprétée par
-  le runtime **Claude Design** (`site/support.js`), qui charge React/ReactDOM
-  depuis un CDN puis rend le template.
+  le runtime **Claude Design** (`site/support.js`), qui rend le template avec
+  React/ReactDOM **auto-hébergés** (`site/assets/vendor/`, via `window.__resources`) —
+  aucune dépendance CDN au moment de la démo.
 - **Aucune étape de build.** Il suffit de servir le dossier `site/`.
 - Typographie **Public Sans** (Google Fonts), palette bleue de la charte de la
   Ville, loader « lys de Thiais », micro-interactions sobres — conformément à la
   direction artistique du cahier des charges.
-- Quelques visuels sont chargés depuis `ville-thiais.fr` ; le logo est servi en
-  local (`site/assets/logo-thiais.jpg`).
+- Tous les visuels sont servis en local (`site/assets/photos/`, `site/assets/logo-thiais.jpg`) :
+  la démo ne dépend plus du site actuel `ville-thiais.fr`.
 
-> ⚠️ Le rendu nécessite un accès réseau sortant (CDN React + Google Fonts).
+> Seules les fontes Google Fonts restent chargées en ligne (avec repli
+> `system-ui` si le réseau est indisponible).
 
 ## ▶️ Lancer en local
 
@@ -71,7 +73,12 @@ publie automatiquement `site/` à chaque `push` sur la branche de production.
 │   ├── support.js        # Runtime Claude Design
 │   ├── doc-page.js       # Composant document paginé (présentation)
 │   ├── robots.txt
-│   └── assets/logo-thiais.jpg
+│   └── assets/
+│       ├── logo-thiais.jpg
+│       ├── photos/       # Visuels auto-hébergés (actus, agenda, kiosque…)
+│       ├── vendor/       # React, ReactDOM, Babel auto-hébergés
+│       ├── shots/        # Captures M1→M4 (note de présentation)
+│       └── qr/           # QR codes vers la maquette en ligne
 ├── netlify.toml
 └── README.md
 ```
