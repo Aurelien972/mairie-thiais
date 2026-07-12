@@ -1,2 +1,6 @@
+# Maquette de consultation : le crawl est autorisé pour que les robots
+# lisent le X-Robots-Tag "noindex, nofollow" (servi par Netlify sur /*).
+# Un Disallow total empêcherait la lecture du noindex et laisserait l'URL
+# apparaître « sans contenu » dans les résultats.
 User-agent: *
-Disallow: /
+Disallow:

@@ -1,15 +1,25 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script>window.__resources = {
+  "https://unpkg.com/react@18.3.1/umd/react.production.min.js": "assets/vendor/react.production.min.js",
+  "https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js": "assets/vendor/react-dom.production.min.js",
+  "https://unpkg.com/@babel/standalone@7.29.0/babel.min.js": "assets/vendor/babel.min.js"
+};</script>
 <script src="./support.js"></script>
 </head>
 <body>
 <x-dc>
 <helmet>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Maquettes — Refonte du site de la Ville de Thiais</title>
+  <meta name="description" content="Note de présentation des maquettes M1–M4 de la refonte du site internet de la Ville de Thiais (consultation n° 26PA12SE) : captures réelles annotées et QR codes vers la maquette interactive." />
+  <meta name="theme-color" content="#0E64A5" />
+  <meta property="og:title" content="Maquettes — Refonte du site de la Ville de Thiais" />
+  <meta property="og:description" content="Captures réelles annotées M1–M4 et accès direct à la maquette interactive." />
+  <meta property="og:image" content="https://thiais-maquette.netlify.app/assets/shots/m1-accueil.jpg" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M32 6 C27 15 25 21 25 28 C25 36 29 42 32 44 C35 42 39 36 39 28 C39 21 37 15 32 6 Z M23 48 L41 48' fill='none' stroke='%230E64A5' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
   <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -21,7 +31,7 @@
     .dc-frame { border: 1px solid #D8E4EE; border-radius: 12px; overflow: hidden; background: #fff; box-shadow: 0 8px 26px rgba(11,43,69,.12); }
     .dc-bar { display: flex; align-items: center; gap: 6px; padding: 8px 12px; background: #F3F7FB; border-bottom: 1px solid #E3EEF7; }
     .dc-dot { width: 9px; height: 9px; border-radius: 99px; background: #CBD8E4; }
-    .dc-url { margin-left: 10px; flex: 1; font-size: 11px; color: #64788A; background: #fff; border: 1px solid #E3EEF7; border-radius: 99px; padding: 4px 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .dc-url { margin-left: 10px; flex: 1; font-size: 11px; color: #5A6E80; background: #fff; border: 1px solid #E3EEF7; border-radius: 99px; padding: 4px 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .dc-screen { position: relative; line-height: 0; }
     .dc-screen > img { width: 100%; display: block; }
     .dc-pin { position: absolute; transform: translate(-50%,-50%); width: 25px; height: 25px; border-radius: 99px; background: #0E64A5; color: #fff; font-size: 12.5px; font-weight: 800; display: flex; align-items: center; justify-content: center; border: 2.5px solid #fff; box-shadow: 0 2px 10px rgba(11,43,69,.45); line-height: 1; }
@@ -33,18 +43,23 @@
     .dc-qr { display: flex; align-items: center; gap: 13px; border: 1px solid #D8E4EE; border-radius: 12px; padding: 12px 15px; background: #F7FBFD; }
     .dc-qr img { width: 78px; height: 78px; display: block; flex-shrink: 0; }
     .dc-tag { display: inline-block; font-size: 11px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: #0E64A5; }
+    .dc-qr a { text-decoration: underline; }
     @media print { .dc-frame, .dc-phone, .dc-qr { box-shadow: none; } }
+    /* Consultation mobile (QR scannés) : la feuille A4 est mise à l'échelle plutôt que rognée. */
+    @media (max-width: 520px) { doc-page { zoom: 0.44; } }
+    @media (min-width: 521px) and (max-width: 900px) { doc-page { zoom: 0.72; } }
   </style>
 </helmet>
 
-<x-import component-from-global-scope="doc-page" from="./doc-page.js" size="a4" margin="0.65in" hint-size="100%,1400px">
+<x-import component-from-global-scope="doc-page" from="./doc-page.js" size="a4" orientation="portrait" margin="0.65in" hint-size="100%,1400px">
+<main>
 
   <!-- ══ EN-TÊTE ══ -->
   <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; padding-bottom: 22px; border-bottom: 3px solid #0E64A5; margin-bottom: 26px;">
     <div>
-      <p style="margin: 0 0 10px; font-size: 11px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: #0E64A5;">Ville de Thiais · Consultation n°26PA12SE · Critère 2.1</p>
+      <p style="margin: 0 0 10px; font-size: 11px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: #0E64A5;">Ville de Thiais · Consultation n°&nbsp;26PA12SE · Critère 2.1</p>
       <h1 style="margin: 0 0 8px; font-size: 31px; font-weight: 800; letter-spacing: -.022em; line-height: 1.1; color: #0B2B45;">Refonte du site internet<br />de la Ville de Thiais</h1>
-      <p style="margin: 0; font-size: 14px; color: #64788A; font-weight: 500;">Maquettes fonctionnelles — version 1 · Juillet 2026</p>
+      <p style="margin: 0; font-size: 14px; color: #5A6E80; font-weight: 500;">Maquettes fonctionnelles — version 1 · juillet 2026</p>
     </div>
     <svg width="84" height="84" viewBox="0 0 64 64" fill="none" stroke="#0E64A5" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">
       <path d="M32 6 C27 15 25 21 25 28 C25 36 29 42 32 44 C35 42 39 36 39 28 C39 21 37 15 32 6 Z"></path>
@@ -60,7 +75,7 @@
       <div style="flex: 1; min-width: 300px;">
         <p style="margin: 0 0 6px; font-size: 11.5px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: #8FC1E8;">Plus qu'une image : une maquette qui se visite</p>
         <p style="margin: 0 0 14px; font-size: 15.5px; line-height: 1.55; color: rgba(255,255,255,.88);">Les écrans de ce document sont de <strong style="color: #FFFFFF;">vraies captures</strong> de la maquette <strong style="color: #FFFFFF;">réellement navigable</strong> : cliquez, filtrez l'agenda, ouvrez le menu, dialoguez avec le chat « Thiais GPT ».</p>
-        <a href="{{ linkHome }}" style="display: inline-flex; align-items: center; gap: 10px; padding: 13px 24px; background: #0E64A5; color: #FFFFFF; border-radius: 99px; font-size: 15px; font-weight: 700; white-space: nowrap;">Ouvrir la maquette ↗</a>
+        <a href="{{ linkHome }}" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 10px; padding: 13px 24px; background: #0E64A5; color: #FFFFFF; border-radius: 99px; font-size: 15px; font-weight: 700; white-space: nowrap;">Ouvrir la maquette ↗</a>
       </div>
       <div style="display: flex; flex-direction: column; align-items: center; gap: 9px;">
         <div style="background: #fff; border-radius: 14px; padding: 11px;"><img src="assets/qr/qr-home.svg" alt="QR code — ouvrir la maquette interactive" style="width: 104px; height: 104px; display: block;" /></div>
@@ -68,17 +83,17 @@
       </div>
     </div>
     <div style="display: flex; gap: 8px 26px; flex-wrap: wrap; margin-top: 18px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,.16); font-size: 13px; font-weight: 600;">
-      <a href="{{ linkHome }}" style="color: #8FC1E8;">M1 · Page d'accueil ↗</a>
-      <a href="{{ linkHome }}" style="color: #8FC1E8;">M2 · Menu (bouton « Menu ») ↗</a>
-      <a href="{{ linkArticle }}" style="color: #8FC1E8;">M3 · Article & page type ↗</a>
-      <a href="{{ linkAgenda }}" style="color: #8FC1E8;">M4 · Agenda & fiche événement ↗</a>
+      <a href="{{ linkHome }}" target="_blank" rel="noopener" style="color: #8FC1E8;">M1 · Page d'accueil ↗</a>
+      <a href="{{ linkHome }}" target="_blank" rel="noopener" style="color: #8FC1E8;">M2 · Menu (bouton « Menu ») ↗</a>
+      <a href="{{ linkArticle }}" target="_blank" rel="noopener" style="color: #8FC1E8;">M3 · Article & page type ↗</a>
+      <a href="{{ linkAgenda }}" target="_blank" rel="noopener" style="color: #8FC1E8;">M4 · Agenda & fiche événement ↗</a>
     </div>
     <p style="margin: 12px 0 0; font-size: 11.5px; color: rgba(255,255,255,.5);">URL publique : {{ displayUrl }}</p>
   </div>
 
   <!-- ══ LECTURE DU CCTP ══ -->
   <h2 style="margin: 0 0 6px; font-size: 21px; font-weight: 800; letter-spacing: -.015em; color: #0B2B45;">Ce que le CCTP pointe, ce que la maquette répond</h2>
-  <p style="margin: 0 0 18px; font-size: 14px; line-height: 1.6; color: #64788A;">Chaque reproche adressé au site actuel (section III du CCTP) trouve une réponse visible et testable dans la maquette.</p>
+  <p style="margin: 0 0 18px; font-size: 14px; line-height: 1.6; color: #5A6E80;">Chaque reproche adressé au site actuel (section III du CCTP) trouve une réponse visible et testable dans la maquette.</p>
 
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 34px;">
     <div style="break-inside: avoid; border: 1px solid #D8E4EE; border-radius: 12px; padding: 16px 18px;">
@@ -87,7 +102,7 @@
     </div>
     <div style="break-inside: avoid; border: 1px solid #D8E4EE; border-radius: 12px; padding: 16px 18px;">
       <p style="margin: 0 0 7px; font-size: 12.5px; color: #B3261E; font-weight: 700;">✕ « Moteur de recherche présent deux fois »</p>
-      <p style="margin: 0; font-size: 13.5px; line-height: 1.55; color: #0B2B45;"><strong style="color: #0E64A5;">→</strong> Une recherche unique, en haut à droite du header — sur toutes les pages.</p>
+      <p style="margin: 0; font-size: 13.5px; line-height: 1.55; color: #0B2B45;"><strong style="color: #0E64A5;">→</strong> Un seul moteur pour tout le site, en haut à droite du header ; le champ du menu ouvre ce même moteur (un index, une page de résultats).</p>
     </div>
     <div style="break-inside: avoid; border: 1px solid #D8E4EE; border-radius: 12px; padding: 16px 18px;">
       <p style="margin: 0 0 7px; font-size: 12.5px; color: #B3261E; font-weight: 700;">✕ « Photos trop lourdes, trop de place »</p>
@@ -95,11 +110,11 @@
     </div>
     <div style="break-inside: avoid; border: 1px solid #D8E4EE; border-radius: 12px; padding: 16px 18px;">
       <p style="margin: 0 0 7px; font-size: 12.5px; color: #B3261E; font-weight: 700;">✕ « Outil d'accessibilité en panne »</p>
-      <p style="margin: 0; font-size: 13.5px; line-height: 1.55; color: #0B2B45;"><strong style="color: #0E64A5;">→</strong> Bouton accessibilité permanent : taille de texte, contraste renforcé, lecture audio ReadSpeaker (§m) — RGAA dès la conception (décret n°2019-768).</p>
+      <p style="margin: 0; font-size: 13.5px; line-height: 1.55; color: #0B2B45;"><strong style="color: #0E64A5;">→</strong> Bouton accessibilité permanent : taille de texte, contraste renforcé, lecture audio ReadSpeaker (§m) — RGAA dès la conception (décret n°&nbsp;2019-768).</p>
     </div>
     <div style="break-inside: avoid; border: 1px solid #D8E4EE; border-radius: 12px; padding: 16px 18px;">
       <p style="margin: 0 0 7px; font-size: 12.5px; color: #B3261E; font-weight: 700;">✕ « Retours accueil / actualités peu clairs »</p>
-      <p style="margin: 0; font-size: 13.5px; line-height: 1.55; color: #0B2B45;"><strong style="color: #0E64A5;">→</strong> Logo = retour accueil fiable sur tous les écrans ; fil d'ariane et bouton « Toutes les actualités » sur chaque contenu.</p>
+      <p style="margin: 0; font-size: 13.5px; line-height: 1.55; color: #0B2B45;"><strong style="color: #0E64A5;">→</strong> Logo = retour accueil fiable sur tous les écrans ; fil d'Ariane et bouton « Toutes les actualités » sur chaque contenu.</p>
     </div>
     <div style="break-inside: avoid; border: 1px solid #D8E4EE; border-radius: 12px; padding: 16px 18px;">
       <p style="margin: 0 0 7px; font-size: 12.5px; color: #B3261E; font-weight: 700;">✕ « Police du menu pas assez lisible »</p>
@@ -110,7 +125,7 @@
   <!-- ══ LES MAQUETTES, EN VRAI ══ -->
   <div style="break-inside: avoid; margin-bottom: 4px;">
     <h2 style="margin: 0 0 5px; font-size: 21px; font-weight: 800; letter-spacing: -.015em; color: #0B2B45; border-top: 3px solid #0E64A5; padding-top: 20px;">Les quatre maquettes — captures réelles</h2>
-    <p style="margin: 0; font-size: 14px; line-height: 1.6; color: #64788A;">Chaque écran ci-dessous est une <strong style="color: #0B2B45;">vraie capture de la maquette en ligne</strong>, pas un schéma. Les pastilles numérotées relient un élément de l'interface à l'exigence du CCTP qu'il satisfait ; le QR ouvre l'écran pour le manipuler.</p>
+    <p style="margin: 0; font-size: 14px; line-height: 1.6; color: #5A6E80;">Chaque écran ci-dessous est une <strong style="color: #0B2B45;">vraie capture de la maquette en ligne</strong>, pas un schéma. Les pastilles numérotées relient un élément de l'interface à l'exigence du CCTP qu'il satisfait ; le QR ouvre l'écran pour le manipuler.</p>
   </div>
 
   <!-- ══ M1 ══ -->
@@ -131,12 +146,12 @@
             <span class="dc-pin" style="top: 6.5%; left: 95.5%;">2</span>
           </div>
         </div>
-        <p style="margin: 8px 2px 0; font-size: 11px; color: #8A9AA8;">Capture réelle — accueil desktop 1440 px. Suivent : 13 accès rapides · actualités · agenda · kiosque · vidéos · footer.</p>
+        <p style="margin: 8px 2px 0; font-size: 11px; color: #5A6E80;">Capture réelle — accueil desktop 1440 px. Suivent&nbsp;: 15 accès rapides · actualités · agenda · kiosque · vidéos · footer.</p>
       </div>
       <div>
         <div style="margin-bottom: 14px;">
           <div style="display: flex; gap: 10px; margin-bottom: 10px; font-size: 12.8px; line-height: 1.5;"><span class="dc-num">1</span><span><strong style="color: #0B2B45;">Recherche unique</strong>, en haut à droite — répond au reproche « moteur de recherche présent deux fois ».</span></div>
-          <div style="display: flex; gap: 10px; margin-bottom: 10px; font-size: 12.8px; line-height: 1.5;"><span class="dc-num">2</span><span><strong style="color: #0B2B45;">Bouton accessibilité</strong> permanent (RGAA) — répond à « outil d'accessibilité en panne » (décret n°2019-768).</span></div>
+          <div style="display: flex; gap: 10px; margin-bottom: 10px; font-size: 12.8px; line-height: 1.5;"><span class="dc-num">2</span><span><strong style="color: #0B2B45;">Bouton accessibilité</strong> permanent (RGAA) — répond à « outil d'accessibilité en panne » (décret n°&nbsp;2019-768).</span></div>
           <div style="display: flex; gap: 10px; margin-bottom: 10px; font-size: 12.8px; line-height: 1.5;"><span class="dc-num">3</span><span><strong style="color: #0B2B45;">Logo = retour accueil</strong> fiable — répond à « retour accueil peu clair ».</span></div>
           <div style="display: flex; gap: 10px; font-size: 12.8px; line-height: 1.5;"><span class="dc-num">4</span><span><strong style="color: #0B2B45;">Réseaux complets</strong> (YouTube, LinkedIn inclus) — répond à « LinkedIn et YouTube invisibles ».</span></div>
         </div>
@@ -144,7 +159,7 @@
           <div class="dc-phone" style="width: 112px; flex-shrink: 0;"><img src="assets/shots/m1-mobile.jpg" alt="Page d'accueil en version mobile 390 px" /></div>
           <div class="dc-qr" style="flex: 1;">
             <img src="assets/qr/qr-home.svg" alt="QR code vers la page d'accueil de la maquette" />
-            <div><p style="margin: 0 0 3px; font-size: 12.5px; font-weight: 800; color: #0B2B45;">Ouvrir M1</p><p style="margin: 0; font-size: 11px; line-height: 1.4; color: #64788A;">Mobile ci-contre.<br />Scannez ou <a href="{{ linkHome }}">cliquez ↗</a></p></div>
+            <div><p style="margin: 0 0 3px; font-size: 12.5px; font-weight: 800; color: #0B2B45;">Ouvrir M1</p><p style="margin: 0; font-size: 11px; line-height: 1.4; color: #5A6E80;">Mobile ci-contre.<br />Scannez ou <a href="{{ linkHome }}" target="_blank" rel="noopener">cliquez ↗</a></p></div>
           </div>
         </div>
       </div>
@@ -169,18 +184,18 @@
             <span class="dc-pin" style="top: 74%; left: 13%;">4</span>
           </div>
         </div>
-        <p style="margin: 8px 2px 0; font-size: 11px; color: #8A9AA8;">Capture réelle — déploiement progressif de gauche à droite, page assombrie, fermeture évidente.</p>
+        <p style="margin: 8px 2px 0; font-size: 11px; color: #5A6E80;">Capture réelle — déploiement progressif de gauche à droite, page assombrie, fermeture évidente.</p>
       </div>
       <div>
         <div style="margin-bottom: 14px;">
-          <div style="display: flex; gap: 10px; margin-bottom: 10px; font-size: 12.8px; line-height: 1.5;"><span class="dc-num">1</span><span><strong style="color: #0B2B45;">Recherche intégrée</strong> en tête de panneau, sur toutes les pages.</span></div>
+          <div style="display: flex; gap: 10px; margin-bottom: 10px; font-size: 12.8px; line-height: 1.5;"><span class="dc-num">1</span><span><strong style="color: #0B2B45;">Accès au moteur unique</strong> en tête de panneau, sur toutes les pages.</span></div>
           <div style="display: flex; gap: 10px; margin-bottom: 10px; font-size: 12.8px; line-height: 1.5;"><span class="dc-num">2</span><span><strong style="color: #0B2B45;">Typographie grande et lisible</strong> (Public Sans 20 px) — répond à « police du menu pas assez lisible ».</span></div>
           <div style="display: flex; gap: 10px; margin-bottom: 10px; font-size: 12.8px; line-height: 1.5;"><span class="dc-num">3</span><span><strong style="color: #0B2B45;">Sous-arborescence niveau 2</strong> (Sénia, La Scène Digitale, entrée de ville) — section V du CCTP.</span></div>
           <div style="display: flex; gap: 10px; font-size: 12.8px; line-height: 1.5;"><span class="dc-num">4</span><span><strong style="color: #0B2B45;">Les 5 rubriques</strong> : Ma mairie · Enfance-jeunesse · Cadre de vie · Culture-sport · Santé-solidarité.</span></div>
         </div>
         <div class="dc-qr">
           <img src="assets/qr/qr-home.svg" alt="QR code vers la maquette, bouton Menu en haut à gauche" />
-          <div><p style="margin: 0 0 3px; font-size: 12.5px; font-weight: 800; color: #0B2B45;">Ouvrir M2</p><p style="margin: 0; font-size: 11px; line-height: 1.4; color: #64788A;">Bouton « Menu », en haut à gauche.<br />Scannez ou <a href="{{ linkHome }}">cliquez ↗</a></p></div>
+          <div><p style="margin: 0 0 3px; font-size: 12.5px; font-weight: 800; color: #0B2B45;">Ouvrir M2</p><p style="margin: 0; font-size: 11px; line-height: 1.4; color: #5A6E80;">Bouton « Menu », en haut à gauche.<br />Scannez ou <a href="{{ linkHome }}" target="_blank" rel="noopener">cliquez ↗</a></p></div>
         </div>
       </div>
     </div>
@@ -204,18 +219,18 @@
             <span class="dc-pin" style="top: 23%; left: 84%;">4</span>
           </div>
         </div>
-        <p style="margin: 8px 2px 0; font-size: 11px; color: #8A9AA8;">Capture réelle — hiérarchie éditoriale aérée, accordéons repliables, documents PDF joints (poids annoncé).</p>
+        <p style="margin: 8px 2px 0; font-size: 11px; color: #5A6E80;">Capture réelle — hiérarchie éditoriale aérée, accordéons repliables, documents PDF joints (poids annoncé).</p>
       </div>
       <div>
         <div style="margin-bottom: 14px;">
-          <div style="display: flex; gap: 10px; margin-bottom: 10px; font-size: 12.8px; line-height: 1.5;"><span class="dc-num">1</span><span><strong style="color: #0B2B45;">Fil d'ariane + « Toutes les actualités »</strong> — répond à « retours vers les actualités peu clairs ».</span></div>
+          <div style="display: flex; gap: 10px; margin-bottom: 10px; font-size: 12.8px; line-height: 1.5;"><span class="dc-num">1</span><span><strong style="color: #0B2B45;">Fil d'Ariane + « Toutes les actualités »</strong> — répond à « retours vers les actualités peu clairs ».</span></div>
           <div style="display: flex; gap: 10px; margin-bottom: 10px; font-size: 12.8px; line-height: 1.5;"><span class="dc-num">2</span><span><strong style="color: #0B2B45;">Lecture audio ReadSpeaker</strong> (§m) + partage social et copie de lien.</span></div>
           <div style="display: flex; gap: 10px; margin-bottom: 10px; font-size: 12.8px; line-height: 1.5;"><span class="dc-num">3</span><span><strong style="color: #0B2B45;">Bandeaux de mise en lumière</strong> (info / alerte) aux codes couleur de la charte.</span></div>
           <div style="display: flex; gap: 10px; font-size: 12.8px; line-height: 1.5;"><span class="dc-num">4</span><span><strong style="color: #0B2B45;">Colonne latérale droite</strong> : infos utiles + visuels (§e) + « À lire aussi ».</span></div>
         </div>
         <div class="dc-qr">
           <img src="assets/qr/qr-article.svg" alt="QR code vers l'article de la maquette" />
-          <div><p style="margin: 0 0 3px; font-size: 12.5px; font-weight: 800; color: #0B2B45;">Ouvrir M3</p><p style="margin: 0; font-size: 11px; line-height: 1.4; color: #64788A;">Scannez ou <a href="{{ linkArticle }}">cliquez ↗</a></p></div>
+          <div><p style="margin: 0 0 3px; font-size: 12.5px; font-weight: 800; color: #0B2B45;">Ouvrir M3</p><p style="margin: 0; font-size: 11px; line-height: 1.4; color: #5A6E80;">Scannez ou <a href="{{ linkArticle }}" target="_blank" rel="noopener">cliquez ↗</a></p></div>
         </div>
       </div>
     </div>
@@ -239,23 +254,26 @@
             <span class="dc-pin" style="top: 48%; left: 18%;">4</span>
           </div>
         </div>
-        <p style="margin: 8px 2px 0; font-size: 11px; color: #8A9AA8;">Capture réelle — 16 événements réels de Thiais (Bal des pompiers, finale Coupe du monde, Chantal Goya, Corrida…).</p>
+        <p style="margin: 8px 2px 0; font-size: 11px; color: #5A6E80;">Capture réelle — 16 événements réels de Thiais (Bal des pompiers, finale Coupe du monde, Chantal Goya, Corrida…).</p>
       </div>
       <div>
         <div style="margin-bottom: 14px;">
-          <div style="display: flex; gap: 10px; margin-bottom: 10px; font-size: 12.8px; line-height: 1.5;"><span class="dc-num">1</span><span><strong style="color: #0B2B45;">Filtres temporels</strong> : Ce soir · Demain · Ce week-end · La semaine prochaine · Les mois suivants.</span></div>
+          <div style="display: flex; gap: 10px; margin-bottom: 10px; font-size: 12.8px; line-height: 1.5;"><span class="dc-num">1</span><span><strong style="color: #0B2B45;">Filtres temporels</strong> &nbsp;: Ce soir · Demain · Cette semaine · La semaine prochaine · Les mois suivants.</span></div>
           <div style="display: flex; gap: 10px; margin-bottom: 10px; font-size: 12.8px; line-height: 1.5;"><span class="dc-num">2</span><span><strong style="color: #0B2B45;">Compteur de résultats</strong> — mise à jour en direct selon les filtres.</span></div>
-          <div style="display: flex; gap: 10px; margin-bottom: 10px; font-size: 12.8px; line-height: 1.5;"><span class="dc-num">3</span><span><strong style="color: #0B2B45;">Les 11 catégories du CCTP</strong> (Micro-Folie, Saison Culturelle, CCAS, Seniors, Petite Enfance…).</span></div>
+          <div style="display: flex; gap: 10px; margin-bottom: 10px; font-size: 12.8px; line-height: 1.5;"><span class="dc-num">3</span><span><strong style="color: #0B2B45;">Les 11 catégories du CCTP</strong> (Micro-Folie, Saison culturelle, CCAS, Seniors, Petite enfance…).</span></div>
           <div style="display: flex; gap: 10px; font-size: 12.8px; line-height: 1.5;"><span class="dc-num">4</span><span><strong style="color: #0B2B45;">Cartes riches</strong> : visuel, catégorie, date, lieu — lien profond vers la fiche.</span></div>
         </div>
         <div class="dc-qr">
           <img src="assets/qr/qr-agenda.svg" alt="QR code vers l'agenda de la maquette" />
-          <div><p style="margin: 0 0 3px; font-size: 12.5px; font-weight: 800; color: #0B2B45;">Ouvrir M4</p><p style="margin: 0; font-size: 11px; line-height: 1.4; color: #64788A;">Scannez ou <a href="{{ linkAgenda }}">cliquez ↗</a></p></div>
+          <div><p style="margin: 0 0 3px; font-size: 12.5px; font-weight: 800; color: #0B2B45;">Ouvrir M4</p><p style="margin: 0; font-size: 11px; line-height: 1.4; color: #5A6E80;">Scannez ou <a href="{{ linkAgenda }}" target="_blank" rel="noopener">cliquez ↗</a></p></div>
         </div>
       </div>
     </div>
 
-    <!-- Fiche événement -->
+  </div>
+
+  <!-- ══ M4 (suite) — fiche événement ══ -->
+  <div style="break-inside: avoid; padding: 0 0 6px;">
     <div style="display: grid; grid-template-columns: 1.4fr 1fr; gap: 26px; align-items: start; margin-top: 20px;">
       <div>
         <div class="dc-frame">
@@ -268,7 +286,7 @@
             <span class="dc-pin" style="top: 89%; left: 21%;">8</span>
           </div>
         </div>
-        <p style="margin: 8px 2px 0; font-size: 11px; color: #8A9AA8;">Capture réelle — fiche événement : date, horaires, contact, tarif, itinéraire.</p>
+        <p style="margin: 8px 2px 0; font-size: 11px; color: #5A6E80;">Capture réelle — fiche événement : date, horaires, contact, tarif, itinéraire.</p>
       </div>
       <div>
         <p style="margin: 0 0 12px; font-size: 12.5px; font-weight: 800; color: #0B2B45;">Fiche événement</p>
@@ -283,7 +301,7 @@
   <!-- ══ SOCLE TECHNIQUE ══ -->
   <div style="break-inside: avoid;">
     <h2 style="margin: 0 0 6px; font-size: 21px; font-weight: 800; letter-spacing: -.015em; color: #0B2B45; border-top: 3px solid #0E64A5; padding-top: 20px;">Un socle technique aligné sur le mémoire</h2>
-    <p style="margin: 0 0 16px; font-size: 14px; line-height: 1.6; color: #64788A;">La maquette n'est pas un dessin : c'est la préfiguration du futur front. Chaque exigence du CCTP y trouve une intégration native.</p>
+    <p style="margin: 0 0 16px; font-size: 14px; line-height: 1.6; color: #5A6E80;">La maquette n'est pas un dessin : c'est la préfiguration du futur front. Chaque exigence du CCTP y trouve une intégration native.</p>
     <table style="width: 100%; border-collapse: collapse; font-size: 13px; line-height: 1.5;">
       <thead>
         <tr>
@@ -292,12 +310,12 @@
         </tr>
       </thead>
       <tbody>
-        <tr><td style="padding: 9px 12px; border-bottom: 1px solid #E3EEF7; font-weight: 600; color: #0B2B45;">Performance, sécurité, éco-conception</td><td style="padding: 9px 12px; border-bottom: 1px solid #E3EEF7;">Front <strong>Next.js</strong> (rendu statique, pages légères) + <strong>WordPress headless</strong> : les agents conservent leur outil éditorial, formés et autonomes.</td></tr>
-        <tr><td style="padding: 9px 12px; border-bottom: 1px solid #E3EEF7; font-weight: 600; color: #0B2B45;">Chat IA « Thiais GPT » (§j)</td><td style="padding: 9px 12px; border-bottom: 1px solid #E3EEF7;">Bulle discrète en bas à droite, réponses sourcées sur les contenus du site — simulée dans la maquette, cliquable.</td></tr>
-        <tr><td style="padding: 9px 12px; border-bottom: 1px solid #E3EEF7; font-weight: 600; color: #0B2B45;">Accessibilité RGAA (décret n°2019-768)</td><td style="padding: 9px 12px; border-bottom: 1px solid #E3EEF7;">Contrastes AA, focus visibles, navigation clavier, lecture audio <strong>ReadSpeaker</strong> (§m), tailles de texte ajustables.</td></tr>
+        <tr><td style="padding: 9px 12px; border-bottom: 1px solid #E3EEF7; font-weight: 600; color: #0B2B45;">Performance, sécurité, éco-conception</td><td style="padding: 9px 12px; border-bottom: 1px solid #E3EEF7;">Front <strong>Next.js</strong> (rendu statique, pages légères) + <strong>WordPress headless</strong> : les agents, formés et autonomes, conservent leur outil éditorial.</td></tr>
+        <tr><td style="padding: 9px 12px; border-bottom: 1px solid #E3EEF7; font-weight: 600; color: #0B2B45;">Chat IA « Thiais GPT » (§j)</td><td style="padding: 9px 12px; border-bottom: 1px solid #E3EEF7;">Bulle discrète en bas à droite, réponses sourcées sur les contenus du site — simulée dans la maquette, cliquable. Nom de travail repris du CCTP&nbsp;; dénomination définitive à valider avec la Ville (usage du sigle «&nbsp;GPT&nbsp;»).</td></tr>
+        <tr><td style="padding: 9px 12px; border-bottom: 1px solid #E3EEF7; font-weight: 600; color: #0B2B45;">Accessibilité RGAA (décret n°&nbsp;2019-768)</td><td style="padding: 9px 12px; border-bottom: 1px solid #E3EEF7;">Contrastes AA, focus visibles, navigation clavier, lecture audio <strong>ReadSpeaker</strong> (§m), tailles de texte ajustables.</td></tr>
         <tr><td style="padding: 9px 12px; border-bottom: 1px solid #E3EEF7; font-weight: 600; color: #0B2B45;">Loader identitaire (§k)</td><td style="padding: 9px 12px; border-bottom: 1px solid #E3EEF7;">Le lys de Thiais dessiné en animation d'ouverture, décliné en favicon et ponctuation graphique.</td></tr>
-        <tr><td style="padding: 9px 12px; border-bottom: 1px solid #E3EEF7; font-weight: 600; color: #0B2B45;">Pop-ups programmables (§i) & formulaires à quota (§h)</td><td style="padding: 9px 12px; border-bottom: 1px solid #E3EEF7;">Encart app mobile programmable démontré en accueil ; formulaires avec jauges de places côté back-office.</td></tr>
-        <tr><td style="padding: 9px 12px; border-bottom: 1px solid #E3EEF7; font-weight: 600; color: #0B2B45;">Écosystème existant conservé</td><td style="padding: 9px 12px; border-bottom: 1px solid #E3EEF7;">Newsletter <strong>Brevo</strong>, app <strong>Neocity</strong>, billetterie, Espace citoyens, Calameo, Google Maps (§l) : intégrés tels quels.</td></tr>
+        <tr><td style="padding: 9px 12px; border-bottom: 1px solid #E3EEF7; font-weight: 600; color: #0B2B45;">Pop-ups programmables (§i) et formulaires à quota (§h)</td><td style="padding: 9px 12px; border-bottom: 1px solid #E3EEF7;">Encart app mobile programmable démontré en accueil ; formulaires avec jauges de places côté back-office.</td></tr>
+        <tr><td style="padding: 9px 12px; border-bottom: 1px solid #E3EEF7; font-weight: 600; color: #0B2B45;">Écosystème existant conservé</td><td style="padding: 9px 12px; border-bottom: 1px solid #E3EEF7;">Newsletter <strong>Brevo</strong>, app <strong>Neocity</strong>, billetterie, Espace citoyens, Calaméo, Google Maps (§l) : intégrés tels quels.</td></tr>
       </tbody>
     </table>
   </div>
@@ -305,39 +323,40 @@
   <!-- ══ DIRECTION ARTISTIQUE ══ -->
   <div style="break-inside: avoid; margin-top: 30px;">
     <h2 style="margin: 0 0 6px; font-size: 21px; font-weight: 800; letter-spacing: -.015em; color: #0B2B45;">Direction artistique</h2>
-    <p style="margin: 0 0 16px; font-size: 14px; line-height: 1.6; color: #64788A;">Charte de la Ville conservée : les bleus sont pipetés sur le logo. Fond blanc dominant, jamais plus de trois bleus.</p>
+    <p style="margin: 0 0 16px; font-size: 14px; line-height: 1.6; color: #5A6E80;">Charte de la Ville conservée : les bleus sont prélevés directement sur le logo de la Ville. Fond blanc dominant, jamais plus de trois bleus.</p>
     <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 18px;">
-      <div style="flex: 1; min-width: 96px;"><div style="height: 52px; border-radius: 10px; background: #0E64A5;"></div><p style="margin: 6px 0 0; font-size: 11.5px; font-weight: 700; color: #0B2B45;">Bleu Thiais <span style="color: #64788A; font-weight: 500;">#0E64A5</span></p></div>
-      <div style="flex: 1; min-width: 96px;"><div style="height: 52px; border-radius: 10px; background: #0B2B45;"></div><p style="margin: 6px 0 0; font-size: 11.5px; font-weight: 700; color: #0B2B45;">Marine <span style="color: #64788A; font-weight: 500;">#0B2B45</span></p></div>
-      <div style="flex: 1; min-width: 96px;"><div style="height: 52px; border-radius: 10px; background: #EDF4FA; border: 1px solid #D8E4EE;"></div><p style="margin: 6px 0 0; font-size: 11.5px; font-weight: 700; color: #0B2B45;">Bleu clair <span style="color: #64788A; font-weight: 500;">#EDF4FA</span></p></div>
-      <div style="flex: 1; min-width: 96px;"><div style="height: 52px; border-radius: 10px; background: #FFFFFF; border: 1px solid #D8E4EE;"></div><p style="margin: 6px 0 0; font-size: 11.5px; font-weight: 700; color: #0B2B45;">Blanc <span style="color: #64788A; font-weight: 500;">fond principal</span></p></div>
-      <div style="flex: 1; min-width: 96px;"><div style="height: 52px; border-radius: 10px; background: #33475B;"></div><p style="margin: 6px 0 0; font-size: 11.5px; font-weight: 700; color: #0B2B45;">Gris texte <span style="color: #64788A; font-weight: 500;">#33475B</span></p></div>
+      <div style="flex: 1; min-width: 96px;"><div style="height: 52px; border-radius: 10px; background: #0E64A5;"></div><p style="margin: 6px 0 0; font-size: 11.5px; font-weight: 700; color: #0B2B45;">Bleu Thiais <span style="color: #5A6E80; font-weight: 500;">#0E64A5</span></p></div>
+      <div style="flex: 1; min-width: 96px;"><div style="height: 52px; border-radius: 10px; background: #0B2B45;"></div><p style="margin: 6px 0 0; font-size: 11.5px; font-weight: 700; color: #0B2B45;">Marine <span style="color: #5A6E80; font-weight: 500;">#0B2B45</span></p></div>
+      <div style="flex: 1; min-width: 96px;"><div style="height: 52px; border-radius: 10px; background: #EDF4FA; border: 1px solid #D8E4EE;"></div><p style="margin: 6px 0 0; font-size: 11.5px; font-weight: 700; color: #0B2B45;">Bleu clair <span style="color: #5A6E80; font-weight: 500;">#EDF4FA</span></p></div>
+      <div style="flex: 1; min-width: 96px;"><div style="height: 52px; border-radius: 10px; background: #FFFFFF; border: 1px solid #D8E4EE;"></div><p style="margin: 6px 0 0; font-size: 11.5px; font-weight: 700; color: #0B2B45;">Blanc <span style="color: #5A6E80; font-weight: 500;">fond principal</span></p></div>
+      <div style="flex: 1; min-width: 96px;"><div style="height: 52px; border-radius: 10px; background: #33475B;"></div><p style="margin: 6px 0 0; font-size: 11.5px; font-weight: 700; color: #0B2B45;">Gris texte <span style="color: #5A6E80; font-weight: 500;">#33475B</span></p></div>
     </div>
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
       <div style="border: 1px solid #D8E4EE; border-radius: 12px; padding: 16px 18px;">
         <p style="margin: 0 0 6px; font-size: 11px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: #0E64A5;">Typographie</p>
         <p style="margin: 0 0 2px; font-size: 22px; font-weight: 800; color: #0B2B45;">Public Sans</p>
-        <p style="margin: 0; font-size: 13px; color: #64788A; line-height: 1.55;">Sans-serif institutionnelle, open source (design system de l'État américain). Titres denses 700–800, corps 16 px minimum, menu très lisible.</p>
+        <p style="margin: 0; font-size: 13px; color: #5A6E80; line-height: 1.55;">Sans-serif institutionnelle, open source (design system de l'État américain). Titres denses 700–800, corps 16 px minimum, menu très lisible.</p>
       </div>
       <div style="border: 1px solid #D8E4EE; border-radius: 12px; padding: 16px 18px;">
         <p style="margin: 0 0 6px; font-size: 11px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: #0E64A5;">Signature graphique</p>
         <div style="display: flex; gap: 14px; align-items: center;">
           <svg width="44" height="44" viewBox="0 0 64 64" fill="none" stroke="#0E64A5" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M32 6 C27 15 25 21 25 28 C25 36 29 42 32 44 C35 42 39 36 39 28 C39 21 37 15 32 6 Z"></path><path d="M21 21 C14 25 11 31 13 37 C15 42 20 44 25 42"></path><path d="M43 21 C50 25 53 31 51 37 C49 42 44 44 39 42"></path><path d="M23 48 L41 48"></path></svg>
-          <p style="margin: 0; font-size: 13px; color: #64788A; line-height: 1.55;">Le lys de Thiais, redessiné au trait : loader de page (§k), favicon, filigranes discrets, avatar du chat.</p>
+          <p style="margin: 0; font-size: 13px; color: #5A6E80; line-height: 1.55;">Le lys de Thiais, redessiné au trait : loader de page (§k), favicon, filigranes discrets, avatar du chat.</p>
         </div>
       </div>
     </div>
   </div>
 
   <!-- ══ PIED ══ -->
-  <div style="margin-top: 30px; padding-top: 16px; border-top: 1px solid #E3EEF7; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: 11.5px; color: #64788A;">
+  <div style="margin-top: 30px; padding-top: 16px; border-top: 1px solid #E3EEF7; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: 11.5px; color: #5A6E80;">
     <span>Maquettes fonctionnelles v1 — visuels non contractuels · Photographies © Ville de Thiais</span>
     <span style="font-weight: 700; color: #0B2B45;">{{ candidatLabel }}</span>
   </div>
 
+</main>
 </x-import>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;urlBase&quot;: {&quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;https://thiais-maquette.netlify.app&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Liens&quot;}, &quot;candidat&quot;: {&quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;Réponse à la consultation 26PA12SE&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Pied de page&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;urlBase&quot;: {&quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;https://thiais-maquette.netlify.app&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Liens&quot;}, &quot;candidat&quot;: {&quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;Digital Freedom Caraïbe — réponse à la consultation 26PA12SE&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Pied de page&quot;}}">
 class Component extends DCLogic {
   renderVals() {
     const raw = (this.props.urlBase ?? '').trim();
@@ -348,7 +367,7 @@ class Component extends DCLogic {
       linkArticle: mk('article.html'),
       linkAgenda: mk('agenda.html'),
       displayUrl: base || 'à renseigner avant export (réglage « urlBase » — ex. https://thiais-maquette.netlify.app)',
-      candidatLabel: this.props.candidat ?? 'Réponse à la consultation 26PA12SE'
+      candidatLabel: this.props.candidat ?? 'Digital Freedom Caraïbe — réponse à la consultation 26PA12SE'
     };
   }
 }

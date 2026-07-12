@@ -1,15 +1,25 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script>window.__resources = {
+  "https://unpkg.com/react@18.3.1/umd/react.production.min.js": "assets/vendor/react.production.min.js",
+  "https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js": "assets/vendor/react-dom.production.min.js",
+  "https://unpkg.com/@babel/standalone@7.29.0/babel.min.js": "assets/vendor/babel.min.js"
+};</script>
 <script src="./support.js"></script>
 </head>
 <body>
 <x-dc>
 <helmet>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Agenda — Que faire à Thiais ? (maquette)</title>
+  <meta name="description" content="Agenda des sorties de la Ville de Thiais : filtres par période et par catégorie, fiches événements détaillées. Maquette interactive — consultation n° 26PA12SE." />
+  <meta name="theme-color" content="#0E64A5" />
+  <meta property="og:title" content="Agenda — Que faire à Thiais ? (maquette)" />
+  <meta property="og:description" content="Que faire à Thiais ? L'agenda filtrable de la maquette du futur site de la Ville." />
+  <meta property="og:image" content="https://thiais-maquette.netlify.app/assets/shots/m4-agenda.jpg" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M32 6 C27 15 25 21 25 28 C25 36 29 42 32 44 C35 42 39 36 39 28 C39 21 37 15 32 6 Z M23 48 L41 48' fill='none' stroke='%230E64A5' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
   <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -31,6 +41,19 @@
     @keyframes heroIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
     @keyframes pinDrop { 0% { transform: translateY(-18px); opacity: 0; } 60% { transform: translateY(2px); opacity: 1; } 100% { transform: translateY(0); } }
     @keyframes pinPulse { 0% { transform: scale(.6); opacity: .5; } 100% { transform: scale(1.8); opacity: 0; } }
+    @keyframes pulseRing { 0% { box-shadow: 0 0 0 0 rgba(14,100,165,.35); } 70% { box-shadow: 0 0 0 12px rgba(14,100,165,0); } 100% { box-shadow: 0 0 0 0 rgba(14,100,165,0); } }
+    .skip-link { position: fixed; top: 8px; left: 8px; z-index: 500; background: #0B2B45; color: #FFFFFF; padding: 10px 18px; border-radius: 8px; font-weight: 600; font-size: 15px; transform: translateY(-200%); transition: transform .2s; }
+    .skip-link:focus, .skip-link:focus-visible { transform: none; }
+    .search-box:focus-within { border-color: #0E64A5 !important; background: #FFFFFF !important; }
+    @media (hover: hover) and (pointer: fine) {
+      #thiais-root button:hover, #thiais-root a:hover { filter: brightness(.96); }
+      #thiais-root footer a:hover { filter: brightness(1.25); }
+    }
+    #thiais-root button:active, #thiais-root a:active { filter: brightness(.9); }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+      html { scroll-behavior: auto !important; }
+    }
   </style>
 </helmet>
 
@@ -38,14 +61,14 @@
 
   <sc-if value="{{ showLoader }}" hint-placeholder-val="{{ false }}">
     <div aria-hidden="true" style="position: fixed; inset: 0; z-index: 400; background: #FFFFFF; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px; opacity: {{ loaderOpacity }}; transition: opacity .45s ease;">
-      <svg width="76" height="76" viewBox="0 0 64 64" fill="none" stroke="#0E64A5" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="stroke-dasharray: 320; animation: lysDraw 1.2s ease forwards;">
+      <svg width="76" height="76" viewBox="0 0 64 64" fill="none" stroke="#0E64A5" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="stroke-dasharray: 320; animation: lysDraw .9s ease forwards;">
         <path d="M32 6 C27 15 25 21 25 28 C25 36 29 42 32 44 C35 42 39 36 39 28 C39 21 37 15 32 6 Z"></path>
         <path d="M21 21 C14 25 11 31 13 37 C15 42 20 44 25 42"></path>
         <path d="M43 21 C50 25 53 31 51 37 C49 42 44 44 39 42"></path>
         <path d="M23 48 L41 48"></path><path d="M27 52 C27 55 26 58 24 60"></path><path d="M32 52 L32 60"></path><path d="M37 52 C37 55 38 58 40 60"></path>
       </svg>
       <div style="font-size: 13px; font-weight: 700; letter-spacing: .32em; color: #0B2B45; text-transform: uppercase;">Ville de Thiais</div>
-      <div style="width: 148px; height: 3px; background: #E3EEF7; border-radius: 99px; overflow: hidden;"><div style="height: 100%; background: #0E64A5; border-radius: 99px; animation: loadBar 1.2s ease forwards;"></div></div>
+      <div style="width: 148px; height: 3px; background: #E3EEF7; border-radius: 99px; overflow: hidden;"><div style="height: 100%; background: #0E64A5; border-radius: 99px; animation: loadBar .9s ease forwards;"></div></div>
     </div>
   </sc-if>
 
@@ -53,52 +76,57 @@
     <div aria-hidden="true" style="position: fixed; top: 0; left: 0; height: 3px; background: #0E64A5; z-index: 300; border-radius: 0 99px 99px 0; animation: navBar 1.3s ease forwards;"></div>
   </sc-if>
 
-  <a href="#contenu" style="position: fixed; top: 8px; left: 8px; z-index: 500; background: #0B2B45; color: #FFFFFF; padding: 10px 18px; border-radius: 8px; font-weight: 600; font-size: 15px; transform: translateY(-200%); transition: transform .2s;" style-focus="transform: none;">Aller au contenu</a>
+  <a href="#contenu" class="skip-link">Aller au contenu</a>
 
   <!-- ══ HEADER ══ -->
   <header data-screen-label="Header" style="position: sticky; top: 0; z-index: 90; background: rgba(255,255,255,.92); backdrop-filter: blur(12px); border-bottom: 1px solid {{ headerBorder }}; box-shadow: {{ headerShadow }}; transition: box-shadow .3s ease;">
     <div style="max-width: 1280px; margin: 0 auto; padding: 0 24px; height: 76px; display: flex; align-items: center; gap: 18px;">
-      <button aria-label="Ouvrir le menu" onClick="{{ openMenu }}" style="display: flex; align-items: center; gap: 10px; background: none; border: 1px solid #D8E4EE; border-radius: 10px; padding: 10px 16px; cursor: pointer; color: #0B2B45; font-size: 15px; font-weight: 700; transition: all .2s;" style-hover="border-color: #0E64A5; background: #EDF4FA;">
+      <button aria-label="Ouvrir le menu" aria-expanded="{{ menuExpanded }}" onClick="{{ openMenu }}" style="display: flex; align-items: center; gap: 10px; background: none; border: 1px solid #D8E4EE; border-radius: 10px; padding: 10px 16px; cursor: pointer; color: #0B2B45; font-size: 15px; font-weight: 700; transition: all .2s;" style-hover="border-color: #0E64A5; background: #EDF4FA;">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16"></path><path d="M4 12h16"></path><path d="M4 17h10"></path></svg>
-        <span style="display: {{ hideOnMobile }};">Menu</span>
+        <span>Menu</span>
       </button>
       <a href="index.html" onClick="{{ goHome }}" aria-label="Ville de Thiais — retour à l'accueil" style="display: flex; align-items: center; gap: 12px;">
         <img src="assets/logo-thiais.jpg" alt="Ville de Thiais" width="46" height="46" style="border-radius: 8px; display: block;" />
         <span style="display: {{ hideOnMobile }}; flex-direction: column; line-height: 1.15;">
           <span style="font-size: 17px; font-weight: 800; color: #0B2B45; letter-spacing: -.01em;">Ville de Thiais</span>
-          <span style="font-size: 12px; color: #64788A; font-weight: 500;">Val-de-Marne</span>
+          <span style="font-size: 12px; color: #5A6E80; font-weight: 500;">Val-de-Marne</span>
         </span>
       </a>
       <div style="flex: 1;"></div>
       <sc-if value="{{ isDesktop }}" hint-placeholder-val="{{ true }}">
         <nav aria-label="Réseaux sociaux" style="display: flex; align-items: center; gap: 2px; padding-right: 10px; border-right: 1px solid #D8E4EE;">
-          <a href="#" onClick="{{ navSocial }}" aria-label="Facebook" style="display: flex; padding: 8px; border-radius: 8px; color: #64788A; transition: all .2s;" style-hover="color: #0E64A5; background: #EDF4FA;"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 21v-7h2.6l.4-3h-3V9.1c0-.9.3-1.5 1.6-1.5h1.5V4.9c-.3 0-1.2-.1-2.2-.1-2.2 0-3.7 1.3-3.7 3.8V11H8v3h2.7v7h2.8z"></path></svg></a>
-          <a href="#" onClick="{{ navSocial }}" aria-label="Instagram" style="display: flex; padding: 8px; border-radius: 8px; color: #64788A; transition: all .2s;" style-hover="color: #0E64A5; background: #EDF4FA;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3.5" y="3.5" width="17" height="17" rx="4.5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none"></circle></svg></a>
-          <a href="#" onClick="{{ navSocial }}" aria-label="YouTube" style="display: flex; padding: 8px; border-radius: 8px; color: #64788A; transition: all .2s;" style-hover="color: #0E64A5; background: #EDF4FA;"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M21.6 7.2a2.5 2.5 0 0 0-1.8-1.8C18.2 5 12 5 12 5s-6.2 0-7.8.4A2.5 2.5 0 0 0 2.4 7.2 26 26 0 0 0 2 12a26 26 0 0 0 .4 4.8 2.5 2.5 0 0 0 1.8 1.8c1.6.4 7.8.4 7.8.4s6.2 0 7.8-.4a2.5 2.5 0 0 0 1.8-1.8A26 26 0 0 0 22 12a26 26 0 0 0-.4-4.8zM10 15V9l5.2 3L10 15z"></path></svg></a>
-          <a href="#" onClick="{{ navSocial }}" aria-label="LinkedIn" style="display: flex; padding: 8px; border-radius: 8px; color: #64788A; transition: all .2s;" style-hover="color: #0E64A5; background: #EDF4FA;"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M6.5 8.5H3.6V21h2.9V8.5zM5 7.2a1.7 1.7 0 1 0 0-3.4 1.7 1.7 0 0 0 0 3.4zM21 13.9c0-3.2-1.7-4.7-4-4.7-1.8 0-2.6 1-3.1 1.7V8.5H11V21h2.9v-6.7c0-1.3.9-2.1 2-2.1s1.9.8 1.9 2.2V21H21v-7.1z"></path></svg></a>
+          <a href="#" onClick="{{ navSocial }}" aria-label="Facebook" style="display: flex; padding: 12px; border-radius: 8px; color: #5A6E80; transition: all .2s;" style-hover="color: #0E64A5; background: #EDF4FA;"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 21v-7h2.6l.4-3h-3V9.1c0-.9.3-1.5 1.6-1.5h1.5V4.9c-.3 0-1.2-.1-2.2-.1-2.2 0-3.7 1.3-3.7 3.8V11H8v3h2.7v7h2.8z"></path></svg></a>
+          <a href="#" onClick="{{ navSocial }}" aria-label="Instagram" style="display: flex; padding: 12px; border-radius: 8px; color: #5A6E80; transition: all .2s;" style-hover="color: #0E64A5; background: #EDF4FA;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3.5" y="3.5" width="17" height="17" rx="4.5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none"></circle></svg></a>
+          <a href="#" onClick="{{ navSocial }}" aria-label="YouTube" style="display: flex; padding: 12px; border-radius: 8px; color: #5A6E80; transition: all .2s;" style-hover="color: #0E64A5; background: #EDF4FA;"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M21.6 7.2a2.5 2.5 0 0 0-1.8-1.8C18.2 5 12 5 12 5s-6.2 0-7.8.4A2.5 2.5 0 0 0 2.4 7.2 26 26 0 0 0 2 12a26 26 0 0 0 .4 4.8 2.5 2.5 0 0 0 1.8 1.8c1.6.4 7.8.4 7.8.4s6.2 0 7.8-.4a2.5 2.5 0 0 0 1.8-1.8A26 26 0 0 0 22 12a26 26 0 0 0-.4-4.8zM10 15V9l5.2 3L10 15z"></path></svg></a>
+          <a href="#" onClick="{{ navSocial }}" aria-label="LinkedIn" style="display: flex; padding: 12px; border-radius: 8px; color: #5A6E80; transition: all .2s;" style-hover="color: #0E64A5; background: #EDF4FA;"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M6.5 8.5H3.6V21h2.9V8.5zM5 7.2a1.7 1.7 0 1 0 0-3.4 1.7 1.7 0 0 0 0 3.4zM21 13.9c0-3.2-1.7-4.7-4-4.7-1.8 0-2.6 1-3.1 1.7V8.5H11V21h2.9v-6.7c0-1.3.9-2.1 2-2.1s1.9.8 1.9 2.2V21H21v-7.1z"></path></svg></a>
         </nav>
       </sc-if>
-      <form role="search" onSubmit="{{ searchSubmit }}" style="display: flex; align-items: center; gap: 8px; background: #EDF4FA; border: 1px solid transparent; border-radius: 99px; padding: 9px 16px; min-width: 0; width: clamp(150px, 24vw, 300px); transition: all .2s;" style-focus="border-color: #0E64A5; background: #FFFFFF;">
+      <form role="search" class="search-box" onSubmit="{{ searchSubmit }}" style="display: flex; align-items: center; gap: 8px; background: #EDF4FA; border: 1px solid transparent; border-radius: 99px; padding: 9px 16px; min-width: 0; width: clamp(120px, 24vw, 300px); transition: all .2s;">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#0E64A5" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
-        <input type="search" value="{{ searchQ }}" onChange="{{ searchChange }}" placeholder="Rechercher…" aria-label="Rechercher sur le site" style="border: none; background: transparent; outline: none; font-size: 15px; font-family: inherit; color: #0B2B45; width: 100%; min-width: 0;" />
+        <input type="search" value="{{ searchQ }}" onChange="{{ searchChange }}" placeholder="Rechercher…" aria-label="Rechercher sur le site" style="border: none; background: transparent; font-size: 16px; font-family: inherit; color: #0B2B45; width: 100%; min-width: 0;" />
       </form>
       <div style="position: relative;">
-        <button aria-label="Options d'accessibilité" onClick="{{ toggleA11y }}" style="display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; background: #0E64A5; color: #FFFFFF; border: none; border-radius: 99px; cursor: pointer; transition: background .2s;" style-hover="background: #0A4A7C;">
-          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2"></circle><path d="M4 9.5c2.7.8 5.3 1.2 8 1.2s5.3-.4 8-1.2"></path><path d="M12 10.7v4l-2.5 6"></path><path d="M12 14.7l2.5 6"></path></svg>
+        <button aria-label="Options d'accessibilité" aria-expanded="{{ a11yExpanded }}" onClick="{{ toggleA11y }}" style="display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; background: #0E64A5; color: #FFFFFF; border: none; border-radius: 99px; cursor: pointer; transition: background .2s;" style-hover="background: #0A4A7C;">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2"></circle><path d="M4 9.5c2.7.8 5.3 1.2 8 1.2s5.3-.4 8-1.2"></path><path d="M12 10.7v4l-2.5 6"></path><path d="M12 14.7l2.5 6"></path></svg>
         </button>
         <sc-if value="{{ a11yOpen }}" hint-placeholder-val="{{ false }}">
           <div role="dialog" aria-label="Options d'accessibilité" style="position: absolute; top: 54px; right: 0; width: 296px; background: #FFFFFF; border: 1px solid #D8E4EE; border-radius: 14px; box-shadow: 0 18px 44px rgba(11,43,69,.16); padding: 18px; animation: popIn .22s ease;">
             <div style="font-size: 15px; font-weight: 800; color: #0B2B45; margin-bottom: 14px;">Accessibilité</div>
             <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px;">
               <span style="font-size: 14.5px; font-weight: 500;">Taille du texte</span>
-              <span style="display: flex; gap: 6px;">
+              <span style="display: flex; gap: 6px; align-items: center;">
                 <button onClick="{{ fontMinus }}" aria-label="Réduire le texte" style="width: 36px; height: 36px; border: 1px solid #D8E4EE; background: #FFFFFF; border-radius: 8px; font-size: 14px; font-weight: 700; color: #0B2B45; cursor: pointer;" style-hover="border-color: #0E64A5;">A−</button>
+                <span aria-live="polite" style="min-width: 44px; text-align: center; font-size: 13px; font-weight: 700; color: #0B2B45;">{{ zoomPct }}</span>
                 <button onClick="{{ fontPlus }}" aria-label="Agrandir le texte" style="width: 36px; height: 36px; border: 1px solid #D8E4EE; background: #FFFFFF; border-radius: 8px; font-size: 17px; font-weight: 700; color: #0B2B45; cursor: pointer;" style-hover="border-color: #0E64A5;">A+</button>
               </span>
             </div>
-            <button onClick="{{ toggleContrast }}" style="width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 11px 12px; border: 1px solid #D8E4EE; background: {{ contrastBg }}; color: {{ contrastColor }}; border-radius: 10px; font-size: 14.5px; font-weight: 600; cursor: pointer; margin-bottom: 12px;">
+            <button onClick="{{ toggleContrast }}" aria-pressed="{{ contrastPressed }}" style="width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 11px 12px; border: 1px solid #D8E4EE; background: {{ contrastBg }}; color: {{ contrastColor }}; border-radius: 10px; font-size: 14.5px; font-weight: 600; cursor: pointer; margin-bottom: 12px;">
               <span>Contraste renforcé</span><span style="font-size: 13px; font-weight: 700;">{{ contrastLabel }}</span>
             </button>
+            <div style="display: flex; gap: 10px; align-items: flex-start; padding: 11px 12px; background: #EDF4FA; border-radius: 10px; margin-bottom: 10px;">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#0E64A5" stroke-width="2" stroke-linecap="round" style="flex-shrink: 0; margin-top: 1px;"><path d="M11 5 6 9H3v6h3l5 4z"></path><path d="M15.5 8.5a5 5 0 0 1 0 7"></path><path d="M18.5 5.5a9.5 9.5 0 0 1 0 13"></path></svg>
+              <span style="font-size: 13px; line-height: 1.5; color: #33475B;">Lecture audio des pages disponible sur chaque contenu (ReadSpeaker).</span>
+            </div>
             <a href="#" onClick="{{ navA11yDecl }}" style="font-size: 13.5px; font-weight: 600; text-decoration: underline;">Déclaration d'accessibilité RGAA</a>
           </div>
         </sc-if>
@@ -106,51 +134,63 @@
     </div>
   </header>
 
-  <main id="contenu" style="max-width: 1280px; margin: 0 auto; padding: 26px 24px 70px;">
+  <!-- ══ BANDEAU ALERTE (canicule) — visible sur tout le site ══ -->
+  <sc-if value="{{ alertVisible }}" hint-placeholder-val="{{ true }}">
+    <div role="alert" data-screen-label="Bandeau alerte" style="background: #B3261E; color: #FFFFFF;">
+      <div style="max-width: 1280px; margin: 0 auto; padding: 12px 24px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M12 3 2.5 20h19L12 3z"></path><path d="M12 10v4"></path><circle cx="12" cy="17" r=".5" fill="currentColor"></circle></svg>
+        <p style="margin: 0; flex: 1; min-width: 220px; font-size: 15px; line-height: 1.5;"><strong style="font-weight: 800;">Vigilance rouge canicule</strong> — Le Val-de-Marne est placé en vigilance rouge depuis samedi 12h. Hydratez-vous et prenez des nouvelles de vos proches.</p>
+        <a href="article.html" onClick="{{ navAlert }}" style="color: #FFFFFF; font-weight: 700; font-size: 14.5px; text-decoration: underline; white-space: nowrap;">Recommandations et lieux frais</a>
+        <button aria-label="Fermer l'alerte" onClick="{{ closeAlert }}" style="background: rgba(255,255,255,.14); border: none; color: #FFFFFF; width: 36px; height: 36px; border-radius: 99px; cursor: pointer; font-size: 16px; line-height: 1; transition: background .2s;" style-hover="background: rgba(255,255,255,.3);">✕</button>
+      </div>
+    </div>
+  </sc-if>
+
+  <main id="contenu" tabindex="-1" style="outline: none; scroll-margin-top: 88px; max-width: 1280px; margin: 0 auto; padding: 26px 24px 70px;">
 
     <!-- ══════ VUE LISTE ══════ -->
     <sc-if value="{{ isList }}" hint-placeholder-val="{{ true }}">
       <div data-screen-label="Agenda — liste">
-        <nav aria-label="Fil d'ariane" style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 13.5px; color: #64788A; animation: heroIn .5s ease both;">
+        <nav aria-label="Fil d'Ariane" style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 13.5px; color: #5A6E80; animation: heroIn .5s ease both;">
           <a href="index.html" onClick="{{ goHome }}" style="font-weight: 600;">Accueil</a>
           <span aria-hidden="true">›</span>
-          <span style="font-weight: 600; color: #0E64A5;">Que faire à Thiais ?</span>
+          <span style="font-weight: 500;">Que faire à Thiais&nbsp;?</span>
           <span aria-hidden="true">›</span>
           <span aria-current="page" style="font-weight: 500;">Agenda</span>
         </nav>
 
         <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap; margin: 22px 0 24px;">
           <div style="animation: heroIn .55s ease .05s both;">
-            <p style="margin: 0 0 8px; display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: #0E64A5;"><span style="display: inline-block; width: 44px; height: 2px; background: #0E64A5; border-radius: 99px;"></span>Que faire à Thiais ?</p>
-            <h1 style="margin: 0; font-size: clamp(30px, 4vw, 46px); font-weight: 800; letter-spacing: -.022em; color: #0B2B45;">Agenda</h1>
+            <p style="margin: 0 0 8px; display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: #0E64A5;"><span style="display: inline-block; width: 44px; height: 2px; background: #0E64A5; border-radius: 99px;"></span>Que faire à Thiais&nbsp;?</p>
+            <h1 style="margin: 0; font-size: clamp(28px, 3.6vw, 42px); font-weight: 800; letter-spacing: -.022em; color: #0B2B45;">Agenda</h1>
           </div>
-          <p style="margin: 0 0 6px; font-size: 15px; color: #64788A; font-weight: 600; animation: heroIn .55s ease .12s both;">{{ resultCount }}</p>
+          <p style="margin: 0 0 6px; font-size: 15px; color: #5A6E80; font-weight: 600; animation: heroIn .55s ease .12s both;">{{ resultCount }}</p>
         </div>
 
         <!-- Filtres temporels -->
         <div role="group" aria-label="Filtres temporels" style="display: flex; gap: 9px; flex-wrap: wrap; margin-bottom: 14px; animation: heroIn .55s ease .15s both;">
           <sc-for list="{{ timeFilters }}" as="f" hint-placeholder-count="6">
-            <button onClick="{{ f.select }}" aria-pressed="{{ f.active }}" style="padding: 10px 18px; border-radius: 99px; border: 1px solid {{ f.border }}; background: {{ f.bg }}; color: {{ f.color }}; font-size: 14.5px; font-weight: 700; cursor: pointer; transition: all .2s;" style-hover="border-color: #0E64A5;">{{ f.label }}</button>
+            <button onClick="{{ f.select }}" aria-pressed="{{ f.active }}" style="padding: 10px 18px; border-radius: 99px; border: 1px solid {{ f.border }}; background: {{ f.bg }}; color: {{ f.color }}; font-size: 14.5px; font-weight: 700; cursor: pointer; transition: all .2s; display: flex; align-items: center; gap: 8px;" style-hover="border-color: #0E64A5;">{{ f.label }} <span style="font-size: 12px; font-weight: 800; background: {{ f.countBg }}; color: {{ f.countColor }}; padding: 2px 8px; border-radius: 99px;">{{ f.count }}</span></button>
           </sc-for>
         </div>
 
         <!-- 11 catégories -->
         <div role="group" aria-label="Catégories" style="display: flex; gap: 8px; flex-wrap: wrap; padding: 16px; background: #F7FBFD; border: 1px solid #E3EEF7; border-radius: 16px; margin-bottom: 28px; animation: heroIn .55s ease .22s both;">
-          <span style="font-size: 13px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: #64788A; align-self: center; margin-right: 4px;">Catégories</span>
+          <span style="font-size: 13px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: #5A6E80; align-self: center; margin-right: 4px;">Catégories</span>
           <sc-for list="{{ catFilters }}" as="c" hint-placeholder-count="12">
-            <button onClick="{{ c.select }}" aria-pressed="{{ c.active }}" style="padding: 7px 14px; border-radius: 99px; border: 1px solid {{ c.border }}; background: {{ c.bg }}; color: {{ c.color }}; font-size: 13px; font-weight: 600; cursor: pointer; transition: all .18s;" style-hover="border-color: #0E64A5; color: #0E64A5;">{{ c.label }}</button>
+            <button onClick="{{ c.select }}" aria-pressed="{{ c.active }}" style="padding: 10px 16px; border-radius: 99px; border: 1px solid {{ c.border }}; background: {{ c.bg }}; color: {{ c.color }}; font-size: 13px; font-weight: 600; cursor: pointer; transition: all .18s;" style-hover="border-color: #0E64A5; color: #0E64A5;">{{ c.label }}</button>
           </sc-for>
         </div>
 
         <!-- Grille événements -->
         <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(268px, 1fr)); gap: 16px;">
           <sc-for list="{{ events }}" as="e" hint-placeholder-count="6">
-            <article onClick="{{ e.open }}" style="background: #FFFFFF; border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; cursor: pointer; border: 1px solid #D8E4EE; transition: all .25s ease; animation: cardIn .5s ease {{ e.delay }} both;" style-hover="transform: translateY(-4px); box-shadow: 0 16px 36px rgba(11,43,69,.13); border-color: #A9C9E3;">
+            <a href="{{ e.href }}" onClick="{{ e.open }}" style="background: #FFFFFF; border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; cursor: pointer; border: 1px solid #D8E4EE; transition: all .25s ease; animation: cardIn .5s ease {{ e.delay }} both;" style-hover="transform: translateY(-4px); box-shadow: 0 16px 36px rgba(11,43,69,.13); border-color: #A9C9E3;">
               <div style="position: relative; height: 150px; background: #D8E4EE;">
-                <div role="img" aria-label="Visuel de l'événement" style="position: absolute; inset: 0; background-image: url({{ e.img }}); background-size: cover; background-position: center;"></div>
+                <div aria-hidden="true" style="position: absolute; inset: 0; background-image: url({{ e.img }}); background-size: cover; background-position: center;"></div>
                 <div style="position: absolute; top: 12px; left: 12px; background: #FFFFFF; border-radius: 12px; padding: 7px 12px; text-align: center; box-shadow: 0 6px 16px rgba(11,43,69,.16); line-height: 1.1;">
                   <div style="font-size: 19px; font-weight: 800; color: #0E64A5;">{{ e.day }}</div>
-                  <div style="font-size: 10.5px; font-weight: 800; letter-spacing: .08em; color: #64788A; text-transform: uppercase;">{{ e.month }}</div>
+                  <div style="font-size: 10.5px; font-weight: 800; letter-spacing: .08em; color: #5A6E80; text-transform: uppercase;">{{ e.month }}</div>
                 </div>
               </div>
               <div style="padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 9px; flex: 1;">
@@ -161,14 +201,15 @@
                   <span style="display: flex; align-items: center; gap: 8px; font-size: 13.5px; color: #33475B;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0E64A5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M12 21s-7-5.5-7-11a7 7 0 0 1 14 0c0 5.5-7 11-7 11z"></path><circle cx="12" cy="10" r="2.5"></circle></svg>{{ e.place }}</span>
                 </div>
               </div>
-            </article>
+            </a>
           </sc-for>
         </div>
 
         <sc-if value="{{ noResults }}" hint-placeholder-val="{{ false }}">
-          <div style="text-align: center; padding: 60px 20px; color: #64788A;">
+          <div style="text-align: center; padding: 60px 20px; color: #5A6E80;">
             <p style="margin: 0 0 6px; font-size: 17px; font-weight: 700; color: #0B2B45;">Aucun événement ne correspond à ces filtres</p>
             <p style="margin: 0; font-size: 14.5px;">Essayez une autre période ou une autre catégorie.</p>
+            <button onClick="{{ resetFilters }}" style="margin-top: 16px; padding: 11px 24px; background: #0E64A5; color: #FFFFFF; border: none; border-radius: 99px; font-size: 14.5px; font-weight: 700; cursor: pointer;">Tout afficher</button>
           </div>
         </sc-if>
       </div>
@@ -177,7 +218,7 @@
     <!-- ══════ FICHE ÉVÉNEMENT ══════ -->
     <sc-if value="{{ isDetail }}" hint-placeholder-val="{{ false }}">
       <div data-screen-label="Fiche événement">
-        <nav aria-label="Fil d'ariane" style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 13.5px; color: #64788A;">
+        <nav aria-label="Fil d'Ariane" style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 13.5px; color: #5A6E80;">
           <a href="index.html" onClick="{{ goHome }}" style="font-weight: 600;">Accueil</a>
           <span aria-hidden="true">›</span>
           <a href="#" onClick="{{ backToList }}" style="font-weight: 600;">Agenda</a>
@@ -194,10 +235,10 @@
           <!-- Colonne principale -->
           <article style="min-width: 0; animation: heroIn .5s ease both;">
             <div style="position: relative; border-radius: 20px; overflow: hidden; background: #D8E4EE; aspect-ratio: 16 / 8; margin-bottom: 24px;">
-              <div role="img" aria-label="Visuel de l'événement" style="position: absolute; inset: 0; background-image: url({{ ev.img }}); background-size: cover; background-position: center;"></div>
+              <div aria-hidden="true" style="position: absolute; inset: 0; background-image: url({{ ev.img }}); background-size: cover; background-position: center;"></div>
               <div style="position: absolute; top: 18px; left: 18px; background: #FFFFFF; border-radius: 14px; padding: 10px 16px; text-align: center; box-shadow: 0 8px 22px rgba(11,43,69,.2); line-height: 1.1;">
                 <div style="font-size: 26px; font-weight: 800; color: #0E64A5;">{{ ev.day }}</div>
-                <div style="font-size: 11.5px; font-weight: 800; letter-spacing: .08em; color: #64788A; text-transform: uppercase;">{{ ev.month }}</div>
+                <div style="font-size: 11.5px; font-weight: 800; letter-spacing: .08em; color: #5A6E80; text-transform: uppercase;">{{ ev.month }}</div>
               </div>
             </div>
             <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 14px;">
@@ -205,7 +246,7 @@
                 <span style="background: #EDF4FA; color: #0E64A5; font-size: 12.5px; font-weight: 700; letter-spacing: .04em; padding: 6px 13px; border-radius: 99px; text-transform: uppercase;">{{ tag.label }}</span>
               </sc-for>
             </div>
-            <h1 style="margin: 0 0 14px; font-size: clamp(27px, 3.4vw, 40px); font-weight: 800; letter-spacing: -.022em; line-height: 1.12; color: #0B2B45; text-wrap: balance;">{{ ev.title }}</h1>
+            <h1 style="margin: 0 0 14px; font-size: clamp(28px, 3.6vw, 42px); font-weight: 800; letter-spacing: -.022em; line-height: 1.12; color: #0B2B45; text-wrap: balance;">{{ ev.title }}</h1>
             <p style="margin: 0 0 22px; font-size: 18px; line-height: 1.6; font-weight: 600; color: #0B2B45; text-wrap: pretty;">{{ ev.lead }}</p>
             <p style="margin: 0 0 26px; font-size: 16.5px; line-height: 1.75; text-wrap: pretty;">{{ ev.body }}</p>
 
@@ -214,25 +255,6 @@
               <button onClick="{{ navShare }}" style="display: flex; align-items: center; gap: 9px; padding: 13px 22px; background: #FFFFFF; color: #0B2B45; border: 1px solid #D8E4EE; border-radius: 99px; font-size: 14.5px; font-weight: 700; cursor: pointer; margin-top: 16px; transition: all .2s;" style-hover="border-color: #0E64A5; color: #0E64A5;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="2.5"></circle><circle cx="6" cy="12" r="2.5"></circle><circle cx="18" cy="19" r="2.5"></circle><path d="M8.2 10.9l7.6-4.3M8.2 13.1l7.6 4.3"></path></svg>Partager</button>
             </div>
 
-            <!-- Dans la même catégorie -->
-            <sc-if value="{{ hasRelated }}" hint-placeholder-val="{{ false }}">
-              <div style="margin-top: 44px;">
-                <h2 style="margin: 0 0 16px; font-size: 20px; font-weight: 800; letter-spacing: -.01em; color: #0B2B45;">À voir aussi</h2>
-                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px;">
-                  <sc-for list="{{ related }}" as="r" hint-placeholder-count="3">
-                    <article onClick="{{ r.open }}" style="background: #FFFFFF; border: 1px solid #D8E4EE; border-radius: 14px; overflow: hidden; cursor: pointer; transition: all .22s ease;" style-hover="transform: translateY(-3px); box-shadow: 0 12px 28px rgba(11,43,69,.12); border-color: #A9C9E3;">
-                      <div style="position: relative; height: 110px; background: #D8E4EE;">
-                        <div role="img" aria-label="" style="position: absolute; inset: 0; background-image: url({{ r.img }}); background-size: cover; background-position: center;"></div>
-                      </div>
-                      <div style="padding: 13px 15px 15px;">
-                        <div style="font-size: 12px; font-weight: 800; color: #0E64A5; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 5px;">{{ r.dateLabel }}</div>
-                        <h3 style="margin: 0; font-size: 14.5px; font-weight: 700; line-height: 1.3; color: #0B2B45;">{{ r.title }}</h3>
-                      </div>
-                    </article>
-                  </sc-for>
-                </div>
-              </div>
-            </sc-if>
           </article>
 
           <!-- Colonne latérale : infos pratiques + carte + PDF -->
@@ -275,12 +297,32 @@
             <sc-if value="{{ ev.hasDoc }}" hint-placeholder-val="{{ false }}">
               <a href="#" onClick="{{ navDoc }}" style="display: flex; align-items: center; gap: 13px; padding: 14px 16px; border: 1px solid #D8E4EE; border-radius: 14px; background: #FFFFFF; transition: all .2s;" style-hover="border-color: #0E64A5; background: #F7FBFD;">
                 <span style="display: flex; align-items: center; justify-content: center; width: 38px; height: 38px; border-radius: 10px; background: #FBEDEC; color: #B3261E; font-size: 10.5px; font-weight: 800; flex-shrink: 0;">PDF</span>
-                <span style="flex: 1; display: flex; flex-direction: column; gap: 1px;"><span style="font-size: 14px; font-weight: 700; color: #0B2B45;">{{ ev.docLabel }}</span><span style="font-size: 12.5px; color: #64788A;">Affiche · 1,2 Mo</span></span>
+                <span style="flex: 1; display: flex; flex-direction: column; gap: 1px;"><span style="font-size: 14px; font-weight: 700; color: #0B2B45;">{{ ev.docLabel }}</span><span style="font-size: 12.5px; color: #5A6E80;">Affiche · 1,2 Mo</span></span>
                 <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#0E64A5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v12"></path><path d="M6 12l6 6 6-6"></path><path d="M4 20h16"></path></svg>
               </a>
             </sc-if>
           </aside>
         </div>
+
+        <!-- Dans la même catégorie — après les infos pratiques (ordre mobile) -->
+        <sc-if value="{{ hasRelated }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top: 44px;">
+            <h2 style="margin: 0 0 16px; font-size: 20px; font-weight: 800; letter-spacing: -.01em; color: #0B2B45;">À voir aussi</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px;">
+              <sc-for list="{{ related }}" as="r" hint-placeholder-count="3">
+                <a href="{{ r.href }}" onClick="{{ r.open }}" style="display: block; background: #FFFFFF; border: 1px solid #D8E4EE; border-radius: 14px; overflow: hidden; cursor: pointer; transition: all .22s ease;" style-hover="transform: translateY(-3px); box-shadow: 0 12px 28px rgba(11,43,69,.12); border-color: #A9C9E3;">
+                  <div style="position: relative; height: 110px; background: #D8E4EE;">
+                    <div aria-hidden="true" style="position: absolute; inset: 0; background-image: url({{ r.img }}); background-size: cover; background-position: center;"></div>
+                  </div>
+                  <div style="padding: 13px 15px 15px;">
+                    <div style="font-size: 12px; font-weight: 800; color: #0E64A5; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 5px;">{{ r.dateLabel }}</div>
+                    <h3 style="margin: 0; font-size: 14.5px; font-weight: 700; line-height: 1.3; color: #0B2B45;">{{ r.title }}</h3>
+                  </div>
+                </a>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
       </div>
     </sc-if>
   </main>
@@ -290,14 +332,16 @@
     <div style="max-width: 1280px; margin: 0 auto; padding: 40px 24px 26px;">
       <div style="display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap;">
         <div style="display: flex; align-items: center; gap: 13px;">
-          <img src="assets/logo-thiais.jpg" alt="" width="46" height="46" style="border-radius: 9px;" />
-          <div style="font-size: 15.5px; font-weight: 800; line-height: 1.25;">Ville de Thiais<br /><span style="font-size: 12px; font-weight: 500; color: #8FC1E8;">Hôtel de Ville — 01 48 92 42 42</span></div>
+          <img src="assets/logo-thiais.jpg" alt="" width="46" height="46" style="border-radius: 8px;" />
+          <div style="font-size: 15.5px; font-weight: 800; line-height: 1.25;">Ville de Thiais<br /><span style="font-size: 12px; font-weight: 500; color: #8FC1E8;">Hôtel de Ville — 01 48 92 42 42<br />Lun–Ven 8h45–12h · 13h30–17h15 — Sam. 9h–11h45</span></div>
         </div>
-        <nav aria-label="Liens légaux" style="display: flex; gap: 6px 22px; flex-wrap: wrap; font-size: 13.5px;">
+        <nav aria-label="Liens légaux" style="display: flex; gap: 2px 22px; flex-wrap: wrap; font-size: 13.5px; line-height: 2.2;">
           <a href="#" onClick="{{ navLegal }}" style="color: rgba(255,255,255,.72);" style-hover="color: #FFFFFF;">Mentions légales</a>
           <a href="#" onClick="{{ navRgpd }}" style="color: rgba(255,255,255,.72);" style-hover="color: #FFFFFF;">RGPD</a>
           <a href="#" onClick="{{ navA11yDecl }}" style="color: rgba(255,255,255,.72);" style-hover="color: #FFFFFF;">Accessibilité</a>
           <a href="#" onClick="{{ navSitemap }}" style="color: rgba(255,255,255,.72);" style-hover="color: #FFFFFF;">Plan du site</a>
+          <a href="#" onClick="{{ navCredits }}" style="color: rgba(255,255,255,.72);" style-hover="color: #FFFFFF;">Crédits</a>
+          <a href="#" onClick="{{ navJobs }}" style="color: rgba(255,255,255,.72);" style-hover="color: #FFFFFF;">Recrutement</a>
           <a href="#" onClick="{{ navContact }}" style="color: rgba(255,255,255,.72);" style-hover="color: #FFFFFF;">Contact</a>
         </nav>
         <div style="display: flex; align-items: center; gap: 10px; font-size: 13px; color: rgba(255,255,255,.55);">
@@ -312,24 +356,24 @@
   <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
     <div data-screen-label="Menu" style="position: fixed; inset: 0; z-index: 200;">
       <div onClick="{{ closeMenu }}" style="position: absolute; inset: 0; background: rgba(11,43,69,.5); backdrop-filter: blur(3px);"></div>
-      <div role="dialog" aria-label="Menu principal" style="position: absolute; top: 0; left: 0; bottom: 0; width: min(480px, 94vw); background: #FFFFFF; box-shadow: 24px 0 64px rgba(11,43,69,.28); display: flex; flex-direction: column; animation: slideRight .38s cubic-bezier(.22,.8,.3,1);">
+      <div role="dialog" aria-modal="true" aria-label="Menu principal" style="position: absolute; top: 0; left: 0; bottom: 0; width: min(480px, 94vw); background: #FFFFFF; box-shadow: 24px 0 64px rgba(11,43,69,.28); display: flex; flex-direction: column; animation: slideRight .38s cubic-bezier(.22,.8,.3,1);">
         <div style="display: flex; align-items: center; gap: 14px; padding: 18px 22px; border-bottom: 1px solid #E3EEF7;">
           <img src="assets/logo-thiais.jpg" alt="" width="40" height="40" style="border-radius: 8px;" />
           <span style="font-size: 16px; font-weight: 800; color: #0B2B45; flex: 1;">Ville de Thiais</span>
           <button aria-label="Fermer le menu" onClick="{{ closeMenu }}" style="display: flex; align-items: center; gap: 8px; background: #EDF4FA; border: none; border-radius: 99px; padding: 10px 16px; cursor: pointer; color: #0B2B45; font-size: 14px; font-weight: 700; transition: background .2s;" style-hover="background: #DCEBF7;">Fermer ✕</button>
         </div>
         <div style="padding: 16px 22px 8px;">
-          <div style="display: flex; align-items: center; gap: 9px; background: #EDF4FA; border-radius: 12px; padding: 12px 16px;">
+          <form onSubmit="{{ menuSearchSubmit }}" style="display: flex; align-items: center; gap: 9px; background: #EDF4FA; border-radius: 12px; padding: 12px 16px;">
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#0E64A5" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
-            <input type="search" placeholder="Rechercher une démarche, une page…" aria-label="Rechercher" style="border: none; background: transparent; outline: none; font-size: 15.5px; font-family: inherit; color: #0B2B45; width: 100%;" />
-          </div>
+            <input type="search" value="{{ menuSearchQ }}" onChange="{{ menuSearchChange }}" placeholder="Rechercher une démarche, une page…" aria-label="Rechercher" style="border: none; background: transparent; font-size: 16px; font-family: inherit; color: #0B2B45; width: 100%;" />
+          </form>
         </div>
         <nav aria-label="Rubriques" style="flex: 1; overflow-y: auto; padding: 8px 12px 20px;">
           <sc-for list="{{ menuSections }}" as="m" hint-placeholder-count="5">
             <div style="border-bottom: 1px solid #EFF5FA;">
               <button onClick="{{ m.toggle }}" aria-expanded="{{ m.open }}" style="width: 100%; display: flex; align-items: center; gap: 14px; padding: 17px 12px; background: none; border: none; cursor: pointer; text-align: left; border-radius: 12px; transition: background .2s;" style-hover="background: #F4F9FC;">
                 <span style="flex: 1; font-size: 20px; font-weight: 800; letter-spacing: -.015em; color: {{ m.titleColor }};">{{ m.label }}</span>
-                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#0E64A5" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="transform: {{ m.chev }}; transition: transform .25s;"><path d="M6 9l6 6 6-6"></path></svg>
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#0E64A5" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="transform: {{ m.chev }}; transition: transform .25s;"><path d="M6 9l6 6 6-6"></path></svg>
               </button>
               <sc-if value="{{ m.open }}" hint-placeholder-val="{{ false }}">
                 <ul style="margin: 0; padding: 2px 12px 16px 14px; list-style: none; display: flex; flex-direction: column; gap: 2px;">
@@ -341,6 +385,10 @@
             </div>
           </sc-for>
         </nav>
+        <div style="padding: 16px 22px 20px; border-top: 1px solid #E3EEF7; display: flex; gap: 14px; align-items: center;">
+          <button onClick="{{ navContact }}" style="padding: 11px 20px; background: #0E64A5; color: #FFFFFF; border: none; border-radius: 99px; font-size: 14px; font-weight: 700; cursor: pointer;" style-hover="background: #0A4A7C;">Nous contacter</button>
+          <span style="font-size: 13px; color: #5A6E80;">Standard : 01 48 92 42 42</span>
+        </div>
       </div>
     </div>
   </sc-if>
@@ -353,12 +401,12 @@
           <span style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 99px; background: #0E64A5; flex-shrink: 0;"><svg width="21" height="21" viewBox="0 0 64 64" fill="none" stroke="#FFFFFF" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M32 6 C27 15 25 21 25 28 C25 36 29 42 32 44 C35 42 39 36 39 28 C39 21 37 15 32 6 Z"></path><path d="M21 21 C14 25 11 31 13 37 C15 42 20 44 25 42"></path><path d="M43 21 C50 25 53 31 51 37 C49 42 44 44 39 42"></path><path d="M23 48 L41 48"></path></svg></span>
           <div style="flex: 1; line-height: 1.3;">
             <div style="font-size: 15.5px; font-weight: 800; color: #FFFFFF;">Thiais GPT</div>
-            <div style="font-size: 12.5px; color: #8FC1E8; display: flex; align-items: center; gap: 6px;"><span style="width: 7px; height: 7px; border-radius: 99px; background: #4ADE80; display: inline-block;"></span>Assistant de la Ville — répond 24h/24</div>
+            <div style="font-size: 12.5px; color: #8FC1E8; display: flex; align-items: center; gap: 6px;"><span style="width: 7px; height: 7px; border-radius: 99px; background: #3FA96A; display: inline-block;"></span>Assistant de la Ville — répond 24h/24</div>
           </div>
-          <button aria-label="Fermer le chat" onClick="{{ toggleChat }}" style="background: rgba(255,255,255,.12); border: none; color: #FFFFFF; width: 32px; height: 32px; border-radius: 99px; cursor: pointer; font-size: 14px;" style-hover="background: rgba(255,255,255,.25);">✕</button>
+          <button aria-label="Fermer le chat" onClick="{{ toggleChat }}" style="background: rgba(255,255,255,.12); border: none; color: #FFFFFF; width: 36px; height: 36px; border-radius: 99px; cursor: pointer; font-size: 14px;" style-hover="background: rgba(255,255,255,.25);">✕</button>
         </div>
-        <div style="background: #EDF4FA; padding: 8px 18px; font-size: 11.5px; color: #64788A; border-bottom: 1px solid #E3EEF7;">Réponses générées par IA, à titre indicatif — vérifiez auprès des services municipaux.</div>
-        <div style="flex: 1; overflow-y: auto; padding: 18px 16px; display: flex; flex-direction: column; gap: 12px; background: #F7FBFD;">
+        <div style="background: #EDF4FA; padding: 8px 18px; font-size: 11.5px; color: #5A6E80; border-bottom: 1px solid #E3EEF7;">Réponses générées par IA, à titre indicatif — vérifiez auprès des services municipaux.</div>
+        <div role="log" aria-live="polite" style="flex: 1; overflow-y: auto; padding: 18px 16px; display: flex; flex-direction: column; gap: 12px; background: #F7FBFD;">
           <div style="display: contents;">{{ chatListAnchor }}</div>
           <sc-for list="{{ chatMsgs }}" as="msg" hint-placeholder-count="1">
             <sc-if value="{{ msg.isBot }}" hint-placeholder-val="{{ true }}">
@@ -390,12 +438,12 @@
           </div>
         </sc-if>
         <form onSubmit="{{ chatSubmit }}" style="display: flex; gap: 9px; padding: 12px 14px; background: #FFFFFF; border-top: 1px solid #E3EEF7;">
-          <input type="text" value="{{ chatInput }}" onChange="{{ chatInputChange }}" placeholder="Écrivez votre question…" aria-label="Votre message" style="flex: 1; border: 1px solid #D8E4EE; border-radius: 99px; padding: 11px 17px; font-size: 14.5px; font-family: inherit; outline: none; color: #0B2B45; min-width: 0;" style-focus="border-color: #0E64A5;" />
+          <input type="text" value="{{ chatInput }}" onChange="{{ chatInputChange }}" placeholder="Écrivez votre question…" aria-label="Votre message" style="flex: 1; border: 1px solid #D8E4EE; border-radius: 99px; padding: 11px 17px; font-size: 16px; font-family: inherit; color: #0B2B45; min-width: 0;" />
           <button type="submit" aria-label="Envoyer" style="width: 44px; height: 44px; border-radius: 99px; background: #0E64A5; color: #FFFFFF; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background .2s;" style-hover="background: #0A4A7C;"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M3.4 20.6 21.8 12 3.4 3.4l.01 6.6L15 12 3.4 14z"></path></svg></button>
         </form>
       </div>
     </sc-if>
-    <button onClick="{{ toggleChat }}" aria-label="Ouvrir l'assistant Thiais GPT" style="display: flex; align-items: center; gap: 11px; padding: 13px 20px 13px 15px; background: #0B2B45; color: #FFFFFF; border: none; border-radius: 99px; cursor: pointer; box-shadow: 0 14px 36px rgba(11,43,69,.3); font-size: 15px; font-weight: 700; transition: all .25s ease;" style-hover="transform: translateY(-2px); background: #0E64A5;">
+    <button onClick="{{ toggleChat }}" aria-label="{{ chatBtnAria }}" aria-expanded="{{ chatExpanded }}" style="display: flex; align-items: center; gap: 11px; padding: 13px 20px 13px 15px; background: #0B2B45; color: #FFFFFF; border: none; border-radius: 99px; cursor: pointer; box-shadow: 0 14px 36px rgba(11,43,69,.3); font-size: 15px; font-weight: 700; transition: all .25s ease; animation: pulseRing 3s 2s 3;" style-hover="transform: translateY(-2px); background: #0E64A5;">
       <span style="display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 99px; background: #0E64A5;"><svg width="17" height="17" viewBox="0 0 64 64" fill="none" stroke="#FFFFFF" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"><path d="M32 6 C27 15 25 21 25 28 C25 36 29 42 32 44 C35 42 39 36 39 28 C39 21 37 15 32 6 Z"></path><path d="M21 21 C14 25 11 31 13 37 C15 42 20 44 25 42"></path><path d="M43 21 C50 25 53 31 51 37 C49 42 44 44 39 42"></path><path d="M23 48 L41 48"></path></svg></span>
       {{ chatBtnLabel }}
     </button>
@@ -427,11 +475,14 @@ class Component extends DCLogic {
       searchQ: '',
       timeFilter: 'tout', catFilter: 'tout',
       selId,
+      alertClosed: false,
+      menuSearchQ: '',
       chatOpen: false, chatTyping: false, chatInput: '', chatMsgs: [
         { isBot: true, isUser: false, text: "Bonjour ! Je suis Thiais GPT.\nCherchez-vous une sortie en particulier ? Concert, sport, ateliers pour enfants… demandez-moi." }
       ]
     };
     this.chatListRef = React.createRef();
+    this._prevDcState = this.state;
   }
 
   componentDidMount() {
@@ -441,12 +492,21 @@ class Component extends DCLogic {
     window.addEventListener('resize', this._onResize);
     this._onKey = (e) => { if (e.key === 'Escape') this.setState({ menuOpen: false, chatOpen: false, a11yOpen: false }); };
     window.addEventListener('keydown', this._onKey);
+    // masquer proprement les images qui échoueraient (placeholder discret)
+    this._onImgErr = (e) => { const t = e.target; if (t && t.tagName === 'IMG' && !t.dataset.fallback) { t.dataset.fallback = '1'; t.src = 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2"><rect width="3" height="2" fill="#EDF4FA"/></svg>'); } };
+    document.addEventListener('error', this._onImgErr, true);
+    // Précédent/Suivant du navigateur : l'état suit le hash (#e/<id>)
+    this._onHash = () => {
+      const h = window.location.hash;
+      this.setState({ selId: h.indexOf('#e/') === 0 ? h.slice(3) : null });
+    };
+    window.addEventListener('hashchange', this._onHash);
     if (this.state.showLoader) {
-      setTimeout(() => this.setState({ loaderOpacity: 0 }), 1250);
+      setTimeout(() => this.setState({ loaderOpacity: 0 }), 950);
       setTimeout(() => {
         this.setState({ showLoader: false });
         try { window.sessionStorage.setItem('thiais-maquette-loaded', '1'); } catch (e) {}
-      }, 1700);
+      }, 1400);
     }
   }
 
@@ -454,6 +514,9 @@ class Component extends DCLogic {
     window.removeEventListener('scroll', this._onScroll);
     window.removeEventListener('resize', this._onResize);
     window.removeEventListener('keydown', this._onKey);
+    document.removeEventListener('error', this._onImgErr, true);
+    window.removeEventListener('hashchange', this._onHash);
+    clearTimeout(this._chatT); clearTimeout(this._navT1); clearTimeout(this._navT2);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -465,6 +528,13 @@ class Component extends DCLogic {
       if (el) el.scrollTop = el.scrollHeight;
     }
     if (prevState.selId !== this.state.selId) window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (prevState.menuOpen !== this.state.menuOpen) {
+      const sel = this.state.menuOpen ? '[aria-label="Fermer le menu"]' : '[aria-label="Ouvrir le menu"]';
+      setTimeout(() => { const b = document.querySelector(sel); if (b) b.focus(); }, 60);
+    }
+    if (!prevState.chatOpen && this.state.chatOpen) {
+      setTimeout(() => { const i = document.querySelector('[aria-label="Votre message"]'); if (i) i.focus(); }, 60);
+    }
     document.body.style.overflow = this.state.menuOpen ? 'hidden' : '';
     this._prevDcState = this.state;
   }
@@ -472,23 +542,38 @@ class Component extends DCLogic {
   demoNav(label) {
     this.setState({ navLoading: true, menuOpen: false });
     clearTimeout(this._navT1); clearTimeout(this._navT2);
-    this._navT1 = setTimeout(() => this.setState({ navLoading: false, toastMsg: 'Écran « ' + label + ' » — présenté dans la maquette complète' }), 1150);
+    this._navT1 = setTimeout(() => this.setState({ navLoading: false, toastMsg: 'Écran «\u00a0' + label + '\u00a0» — sera développé dans le site final (hors périmètre de la maquette)' }), 1150);
     this._navT2 = setTimeout(() => this.setState({ toastMsg: null }), 4200);
   }
   nav(label) { return (e) => { if (e && e.preventDefault) e.preventDefault(); this.demoNav(label); }; }
+  navExt(label) {
+    return (e) => {
+      if (e && e.preventDefault) e.preventDefault();
+      this.setState({ menuOpen: false, toastMsg: 'Service externe «\u00a0' + label + '\u00a0» — déjà en production, intégré tel quel au site final' });
+      clearTimeout(this._navT2);
+      this._navT2 = setTimeout(() => this.setState({ toastMsg: null }), 4200);
+    };
+  }
   navTo(url) { return (e) => { if (e && e.preventDefault) e.preventDefault(); this.setState({ navLoading: true }); setTimeout(() => { window.location.href = url; }, 450); }; }
-  openEvent(id) { return () => { this.setState({ selId: id, navLoading: true }); try { window.history.replaceState(null, '', '#e/' + id); } catch (e) {} setTimeout(() => this.setState({ navLoading: false }), 700); }; }
+  openEvent(id) {
+    return (e) => {
+      if (e && e.preventDefault) e.preventDefault();
+      this.setState({ selId: id, navLoading: true });
+      try { window.location.hash = '#e/' + id; } catch (er) {}
+      setTimeout(() => this.setState({ navLoading: false }), 700);
+    };
+  }
 
   botAnswer(q) {
     const t = q.toLowerCase();
-    if (t.includes('enfant') || t.includes('famille')) return "Pour les familles ce mois-ci :\n· Animations estivales au parc de l'Europe (dim. 26 juillet, 14h–20h)\n· Journées du Patrimoine au parc de Cluny (19 sept.)\n· Theodasium au Palais Omnisports (17–18 oct.)\nTout est gratuit.";
+    if (t.includes('enfant') || t.includes('famille')) return "Pour les familles ce mois-ci :\n· Animations estivales au parc de l'Europe (dim. 26 juillet, 14h–20h)\n· Journées du patrimoine au parc de Cluny (19 sept.)\n· Theodasium au Palais Omnisports (17–18 oct.)\nTout est gratuit.";
     if (t.includes('concert') || t.includes('musique')) return "Côté musique :\n· Feu d'artifice en musique le 14 juillet, 23h30\n· Chantal Goya au Palais Omnisports le 12 septembre\n· Festival Bossa Nova au café-théâtre le 28 novembre";
     if (t.includes('sport')) return "Côté sport :\n· Retransmission de la finale de la Coupe du monde le 19 juillet au parc de l'Europe\n· Theodasium les 17–18 octobre\n· Corrida de Thiais le 6 décembre — inscriptions ouvertes en septembre";
-    if (t.includes('gratuit')) return "La plupart des événements municipaux sont gratuits : animations estivales, feu d'artifice, retransmissions, Journées du Patrimoine…\nLes spectacles de la saison culturelle sont payants (billetterie en ligne).";
+    if (t.includes('gratuit')) return "La plupart des événements municipaux sont gratuits : animations estivales, feu d'artifice, retransmissions, Journées du patrimoine…\nLes spectacles de la saison culturelle sont payants (billetterie en ligne).";
     return "Je n'ai pas encore de réponse précise à cette question.\nParcourez l'agenda avec les filtres ci-dessus, ou appelez le 01 48 92 42 42.";
   }
   sendChat(text) {
-    if (!text.trim()) return;
+    if (!text.trim() || this.state.chatTyping) return;
     const msgs = this.state.chatMsgs.concat([{ isBot: false, isUser: true, text: text.trim() }]);
     this.setState({ chatMsgs: msgs, chatInput: '', chatTyping: true });
     clearTimeout(this._chatT);
@@ -498,24 +583,24 @@ class Component extends DCLogic {
   }
 
   getEvents() {
-    const U = 'https://www.ville-thiais.fr/wp-content/uploads/';
+    const U = 'assets/photos/';
     return [
-      { id: 'bal-pompiers', f: ['soir', 'weekend'], cats: ['tout-public'], day: '13', month: 'Juil', cat: 'Tout public', title: 'Bal des pompiers 2026', time: '19h – 3h', place: 'Caserne de Rungis', img: U + '2026/06/Affiche_bal_pompiers_juillet_2026-364x212.jpg', dateFull: 'Lundi 13 juillet 2026', timeFull: 'De 19h à 3h du matin', address: '2 rue de la Grande-Borne, 94150 Rungis', contact: 'Amicale des sapeurs-pompiers · 01 45 12 66 00', price: 'Entrée libre', lead: "La caserne de Rungis ouvre ses portes pour la traditionnelle soirée du 13 juillet : ambiance garantie jusqu'au bout de la nuit.", body: "Au programme : DJ, piste de danse au cœur de la caserne, buvette et restauration sur place tenues par l'amicale des sapeurs-pompiers. Les bénéfices contribuent aux œuvres sociales des pompiers. Venez nombreux, en famille ou entre amis — et gardez des forces pour le feu d'artifice du lendemain !", hasDoc: true, docLabel: 'Affiche — Bal des pompiers 2026' },
-      { id: 'feu-artifice', f: ['demain', 'weekend'], cats: ['spectacles'], day: '14', month: 'Juil', cat: 'Spectacles & concerts', title: "Feu d'artifice en musique", time: '23h30', place: 'Place du Général Leclerc', img: U + '2025/07/14-juillet-2025-Spectacle-pyromelodique-TO-32-scaled-364x212.jpg', dateFull: 'Mardi 14 juillet 2026', timeFull: 'Tir à 23h30 — placement libre dès 22h30', address: 'Place du Général Leclerc, 94320 Thiais', contact: 'Service événementiel · 01 48 92 42 42', price: 'Gratuit', lead: 'Le traditionnel spectacle pyromélodique de la Fête nationale illumine le ciel de Thiais.', body: "Vingt minutes de tableaux pyrotechniques synchronisés sur une bande-son symphonique et populaire. Les abords de la place sont piétonnisés dès 21h ; buvette associative sur place. En cas de vent fort, le tir peut être reporté — l'information sera publiée sur le site et l'application de la Ville.", hasDoc: false, docLabel: '' },
-      { id: 'cdm-finale', f: ['weekend'], cats: ['sport', 'jeunesse', 'tout-public'], day: '19', month: 'Juil', cat: 'Sport · Tout public', title: 'Retransmission de la finale de la Coupe du monde', time: 'Dès 20h', place: "Parc de l'Europe", img: U + '2026/07/retransmission_cdm_2026_couv-364x212.jpg', dateFull: 'Dimanche 19 juillet 2026', timeFull: "Ouverture du site à 20h — coup d'envoi 21h", address: "Avenue de l'Europe, 94320 Thiais", contact: 'Service des sports · 01 48 92 42 50', price: 'Gratuit', lead: "Écran géant, pelouse et ferveur collective : vivez la finale ensemble au parc de l'Europe.", body: "La Ville installe un écran géant de 25 m² au cœur du parc. Food-trucks et buvette dès 20h, animations pour les enfants à la mi-temps. Pensez à apporter plaids et chapeaux — et à respecter le tri sur place, des points de collecte sont installés.", hasDoc: false, docLabel: '' },
-      { id: 'expo-focale50', f: ['weekend', 'semaine', 'mois'], cats: ['saison-culturelle'], day: '29', month: 'Août', cat: 'Saison culturelle', title: 'Exposition photo du club Focale 50', time: "Jusqu'au 29 août", place: "Hall de l'Hôtel de Ville", img: U + '2025/08/expo_focale50-scaled-364x212.jpg', dateFull: "Jusqu'au samedi 29 août 2026", timeFull: "Aux horaires d'ouverture de la mairie", address: 'Rue Maurepas, 94320 Thiais', contact: 'Service culturel · 01 48 92 42 68', price: 'Entrée libre', lead: 'Le club photo thiaisien Focale 50 expose une année de regards portés sur la ville et ses habitants.', body: "Quarante tirages grand format sélectionnés par les membres du club : scènes de marché, architecture du Sénia, portraits d'habitants et instants volés dans les parcs. Un vote du public désignera la photographie de l'année, récompensée lors du Forum des activités en septembre.", hasDoc: false, docLabel: '' },
-      { id: 'rando-cluny', f: ['semaine'], cats: ['ccas', 'seniors'], day: '21', month: 'Juil', cat: 'CCAS · Seniors', title: 'Randonnée douce au parc de Cluny', time: 'Dès 18h15', place: 'Parc de Cluny', img: U + '2026/06/ccas-randonnees-juillet-2026-affiche-A3-BD-scaled-364x212.jpg', dateFull: 'Mardi 21 juillet 2026', timeFull: 'Départ 18h15 — durée 1h30 environ', address: 'Rue des Alouettes, 94320 Thiais', contact: 'CCAS · 01 48 92 42 42', price: 'Gratuit, sur inscription', lead: 'Une marche accompagnée en soirée, à allure douce, ouverte aux seniors thiaisiens.', body: "Encadrée par un éducateur sportif, la randonnée emprunte les allées ombragées du parc de Cluny en fin de journée, quand la chaleur retombe. Prévoir chaussures confortables et bouteille d'eau. Inscription auprès du CCAS — places limitées à 25 participants.", hasDoc: true, docLabel: 'Programme des randonnées CCAS' },
-      { id: 'anim-estivales', f: ['semaine'], cats: ['tout-public', 'jeunesse'], day: '26', month: 'Juil', cat: "Thiais fête l'été", title: 'Animations estivales au parc', time: '14h – 20h', place: "Parc de l'Europe", img: U + '2026/05/animations-estivales-2026-affiche-120-x-176-364x212.jpg', dateFull: 'Dimanche 26 juillet 2026', timeFull: 'De 14h à 20h en continu', address: "Avenue de l'Europe, 94320 Thiais", contact: 'Service événementiel · 01 48 92 42 42', price: 'Gratuit', lead: "Structures gonflables, jeux d'eau, ateliers créatifs : un dimanche d'été pour toute la famille.", body: "Dans le cadre de « Thiais fête l'été », le parc de l'Europe se transforme en village d'animations : accrobranche mobile, jeux d'eau, tournois sportifs, coin lecture de la médiathèque et goûter offert à 16h30. Accès libre, activités encadrées par les animateurs municipaux.", hasDoc: true, docLabel: "Affiche — Thiais fête l'été" },
-      { id: 'atelier-bd', f: ['semaine'], cats: ['mediatheque', 'jeunesse'], day: '23', month: 'Juil', cat: 'Animations médiathèque', title: 'Atelier BD : crée ta première planche', time: '15h – 17h', place: 'Médiathèque municipale', img: U + '2026/05/mediatheque-actions-culturelles-mai-juin-juillet-2026-90x132.jpg', dateFull: 'Jeudi 23 juillet 2026', timeFull: 'De 15h à 17h', address: '52 avenue de Versailles, 94320 Thiais', contact: 'Médiathèque · 01 48 92 42 80', price: 'Gratuit, sur inscription', lead: "Un illustrateur professionnel initie les 8-14 ans au découpage, au crayonné et à l'encrage.", body: "Du scénario à la planche finale : chaque participant repart avec sa création. Matériel fourni. Inscription au comptoir jeunesse de la médiathèque ou par téléphone — 12 places.", hasDoc: false, docLabel: '' },
-      { id: 'micro-folie', f: ['semaine', 'mois'], cats: ['micro-folie', 'tout-public'], day: '25', month: 'Juil', cat: 'Micro-Folie', title: 'Micro-Folie : le Louvre en réalité virtuelle', time: '14h – 18h', place: 'Espace municipal Grignon', img: U + '2021/02/scene_digitale_00-350x262.jpg', dateFull: 'Samedi 25 juillet 2026', timeFull: 'Séances de 30 min, de 14h à 18h', address: '78 avenue René Panhard, 94320 Thiais', contact: 'Micro-Folie · 01 48 92 42 75', price: 'Gratuit', lead: 'Casque sur la tête, parcourez les galeries du Louvre sans quitter Thiais.', body: "Le musée numérique de la Micro-Folie propose une visite immersive des chefs-d'œuvre du Louvre, accompagnée par un médiateur culturel. Séances toutes les 30 minutes, dès 8 ans. Réservation conseillée le week-end.", hasDoc: false, docLabel: '' },
-      { id: 'don-sang', f: ['mois'], cats: ['tout-public'], day: '16', month: 'Août', cat: 'Tout public', title: "Don du sang — collecte de l'été", time: '9h – 14h', place: 'Centre de loisirs Jules Ferry', img: U + '2025/07/sang-364x212.jpg', dateFull: 'Dimanche 16 août 2026', timeFull: 'De 9h à 14h, sans interruption', address: 'Rue Jules Ferry, 94320 Thiais', contact: 'EFS Île-de-France · dondesang.efs.sante.fr', price: 'Gratuit — sur rendez-vous', lead: "Les réserves baissent chaque été : une heure de votre dimanche peut sauver trois vies.", body: "La collecte est organisée avec l'Établissement Français du Sang. Prenez rendez-vous en ligne pour éviter l'attente ; venez avec une pièce d'identité, ne venez pas à jeun. Collation offerte après le don.", hasDoc: false, docLabel: '' },
-      { id: 'forum-activites', f: ['mois'], cats: ['tout-public', 'sport', 'jeunesse'], day: '05', month: 'Sept', cat: 'Tout public', title: 'Forum des activités thiaisiennes', time: '10h – 17h', place: 'Palais Omnisports', img: U + '2026/04/Forum-des-activites-thiaisiennes-2026-364x212.jpg', dateFull: 'Samedi 5 septembre 2026', timeFull: 'De 10h à 17h en continu', address: '96 avenue du Général de Gaulle, 94320 Thiais', contact: 'Service vie associative · 01 48 92 42 60', price: 'Entrée libre', lead: "Sport, culture, solidarité : toutes les associations thiaisiennes réunies pour préparer votre rentrée.", body: "Plus de 80 associations présentes, démonstrations sur le plateau sportif toute la journée, inscriptions sur place. Le guichet unique délocalisé permet de finaliser dossiers et quotients familiaux sans passer par la mairie.", hasDoc: true, docLabel: 'Plan du forum & liste des exposants' },
-      { id: 'chantal-goya', f: ['mois'], cats: ['spectacles', 'saison-culturelle'], day: '12', month: 'Sept', cat: 'Saison culturelle', title: 'Le monde magique de Chantal Goya', time: 'Dès 21h', place: 'Palais Omnisports', img: U + '2026/07/chanteal_goya_thiais_couv-364x212.jpg', dateFull: 'Samedi 12 septembre 2026', timeFull: 'Ouverture des portes 20h — spectacle 21h', address: '96 avenue du Général de Gaulle, 94320 Thiais', contact: 'Billetterie · billetterie.ville-thiais.fr', price: 'De 25 € à 39 €', lead: 'Un spectacle féerique pour petits et grands, en ouverture de la saison culturelle 2026-2027.', body: "Décors géants, personnages emblématiques et deux heures de chansons intergénérationnelles. Placement numéroté ; billetterie en ligne et à l'accueil de l'Hôtel de Ville. Accès PMR : réservation recommandée au 01 48 92 42 68.", hasDoc: true, docLabel: 'Programme saison culturelle 2026-27' },
-      { id: 'jep-2026', f: ['mois'], cats: ['tout-public', 'jeunesse'], day: '19', month: 'Sept', cat: 'Tout public', title: 'Journées européennes du Patrimoine', time: '14h – 16h30', place: 'Parc de Cluny', img: U + '2026/07/JEP26_RS-ext-16x9-1-364x212.png', dateFull: 'Samedi 19 septembre 2026', timeFull: 'Visites guidées à 14h, 15h et 16h30', address: 'Rue des Alouettes, 94320 Thiais', contact: 'Service culturel · 01 48 92 42 68', price: 'Gratuit', lead: "Le patrimoine thiaisien se dévoile : du château de Cluny disparu aux grands projets d'aujourd'hui.", body: "Visites guidées par les Archives municipales, exposition de cartes anciennes et parcours enfants « chasse au patrimoine ». En clôture, présentation du projet d'entrée de ville et de la Scène Digitale par les équipes de l'urbanisme.", hasDoc: false, docLabel: '' },
-      { id: 'rpe-jeux', f: ['mois'], cats: ['petite-enfance', 'education'], day: '24', month: 'Sept', cat: 'Petite Enfance', title: 'Matinée jeux du Relais Petite Enfance', time: '9h30 – 11h30', place: 'Relais Petite Enfance', img: U + '2026/07/27-juin-2026-Remise-des-prix-aux-CM2-HP-31-205x160.png', dateFull: 'Jeudi 24 septembre 2026', timeFull: 'De 9h30 à 11h30', address: 'Rue Maurepas, 94320 Thiais', contact: 'RPE · 01 48 92 42 55', price: 'Gratuit, sur inscription', lead: 'Un temps de jeux et de motricité pour les 0-3 ans, avec leurs parents ou assistantes maternelles.', body: "Parcours de motricité, comptines et espace sensoriel animés par les éducatrices du Relais. Ouvert aux familles thiaisiennes et aux professionnelles de la petite enfance. Inscription par téléphone la semaine précédente.", hasDoc: false, docLabel: '' },
-      { id: 'theodasium', f: ['mois'], cats: ['sport', 'jeunesse'], day: '17', month: 'Oct', cat: 'Sport', title: 'Theodasium 2026 — le week-end 100 % sport', time: 'Sam & dim · 10h – 19h', place: 'Palais Omnisports', img: U + '2026/07/500-flyers-15x21-theodasium-2026-364x212.jpg', dateFull: 'Samedi 17 & dimanche 18 octobre 2026', timeFull: 'De 10h à 19h les deux jours', address: '96 avenue du Général de Gaulle, 94320 Thiais', contact: 'Service des sports · 01 48 92 42 50', price: 'Gratuit', lead: 'Deux jours pour tester plus de 30 disciplines avec les clubs thiaisiens — esport compris.', body: "Initiations encadrées, tournois flash, mur d'escalade mobile et plateau esport en avant-première de La Scène Digitale. Chaque participant reçoit un passeport sportif ; les plus assidus gagnent des places pour les Internationaux de GR 2027.", hasDoc: true, docLabel: 'Programme Theodasium 2026' },
-      { id: 'corrida', f: ['mois'], cats: ['sport'], day: '06', month: 'Déc', cat: 'Sport', title: 'Corrida de Thiais 2026', time: 'Dès 9h', place: 'Départ Palais Omnisports', img: U + '2026/05/Corrida-de-Thiais-2026-affiche-364x212.jpg', dateFull: 'Dimanche 6 décembre 2026', timeFull: 'Courses de 9h à 12h30 selon catégories', address: '96 avenue du Général de Gaulle, 94320 Thiais', contact: 'Service des sports · 01 48 92 42 50', price: '5 € à 12 € selon course — gratuit pour les écoles', lead: "La course populaire de fin d'année : 5 km, 10 km et courses enfants dans les rues de Thiais.", body: "Parcours labellisé FFA, échauffement collectif en musique, ravitaillements aux 2,5 km. Dossards à retirer la veille au Palais Omnisports. Une partie des inscriptions est reversée au Téléthon.", hasDoc: true, docLabel: 'Règlement & parcours 2026' },
-      { id: 'bossa-nova', f: ['mois'], cats: ['spectacles'], day: '28', month: 'Nov', cat: 'Spectacles & concerts', title: 'Festival Bossa Nova 2026', time: 'Dès 20h30', place: 'Café-théâtre — Espace Grignon', img: U + '2026/06/festival_bossa_nova_2026-scaled-364x212.jpg', dateFull: 'Samedi 28 novembre 2026', timeFull: 'Concerts à 20h30 et 22h', address: '78 avenue René Panhard, 94320 Thiais', contact: 'Billetterie · billetterie.ville-thiais.fr', price: '12 € — placement libre', lead: 'Une soirée aux couleurs du Brésil : deux quartets, une piste de danse et un bar aux saveurs cariocas.', body: "Le festival réunit deux formations franco-brésiliennes pour revisiter les classiques de Jobim et Gilberto. Restauration légère sur place dès 19h30. Réservation en ligne fortement conseillée — la salle affiche complet chaque année.", hasDoc: false, docLabel: '' }
+      { id: 'bal-pompiers', f: ['soir', 'weekend'], cats: ['tout-public'], day: '13', month: 'Juil', cat: 'Tout public', title: 'Bal des pompiers 2026', time: '19h–3h', place: 'Caserne de Rungis', img: U + 'Affiche_bal_pompiers_juillet_2026-364x212.jpg', dateFull: 'Lundi 13 juillet 2026', timeFull: 'De 19h à 3h du matin', address: '2 rue de la Grande-Borne, 94150 Rungis', contact: 'Amicale des sapeurs-pompiers · 01 45 12 66 00', price: 'Entrée libre', lead: "La caserne de Rungis ouvre ses portes pour la traditionnelle soirée du 13 juillet : ambiance garantie jusqu'au bout de la nuit.", body: "Au programme : DJ, piste de danse au cœur de la caserne, buvette et restauration sur place tenues par l'amicale des sapeurs-pompiers. Les bénéfices contribuent aux œuvres sociales des pompiers. Venez nombreux, en famille ou entre amis — et gardez des forces pour le feu d'artifice du lendemain !", hasDoc: true, docLabel: 'Affiche — Bal des pompiers 2026' },
+      { id: 'feu-artifice', f: ['demain', 'weekend'], cats: ['spectacles'], day: '14', month: 'Juil', cat: 'Spectacles & concerts', title: "Feu d'artifice en musique", time: '23h30', place: 'Place du Général Leclerc', img: U + '14-juillet-2025-Spectacle-pyromelodique-TO-32-scaled-364x212.jpg', dateFull: 'Mardi 14 juillet 2026', timeFull: 'Tir à 23h30 — placement libre dès 22h30', address: 'Place du Général Leclerc, 94320 Thiais', contact: 'Service événementiel · 01 48 92 42 42', price: 'Gratuit', lead: 'Le traditionnel spectacle pyromélodique de la Fête nationale illumine le ciel de Thiais.', body: "Vingt minutes de tableaux pyrotechniques synchronisés sur une bande-son symphonique et populaire. Les abords de la place sont piétonnisés dès 21h ; buvette associative sur place. En cas de vent fort, le tir peut être reporté — l'information sera publiée sur le site et l'application de la Ville.", hasDoc: false, docLabel: '' },
+      { id: 'cdm-finale', f: ['weekend'], cats: ['sport', 'jeunesse', 'tout-public'], day: '19', month: 'Juil', cat: 'Sport · Tout public', title: 'Retransmission de la finale de la Coupe du monde', time: 'Dès 20h', place: "Parc de l'Europe", img: U + 'retransmission_cdm_2026_couv-364x212.jpg', dateFull: 'Dimanche 19 juillet 2026', timeFull: "Ouverture du site à 20h — coup d'envoi 21h", address: "Avenue de l'Europe, 94320 Thiais", contact: 'Service des sports · 01 48 92 42 50', price: 'Gratuit', lead: "Écran géant, pelouse et ferveur collective : vivez la finale ensemble au parc de l'Europe.", body: "La Ville installe un écran géant de 25 m² au cœur du parc. Food-trucks et buvette dès 20h, animations pour les enfants à la mi-temps. Pensez à apporter plaids et chapeaux — et à respecter le tri sur place, des points de collecte sont installés.", hasDoc: false, docLabel: '' },
+      { id: 'rando-cluny', f: ['semaine'], cats: ['ccas', 'seniors'], day: '21', month: 'Juil', cat: 'CCAS · Seniors', title: 'Randonnée douce au parc de Cluny', time: 'Dès 18h15', place: 'Parc de Cluny', img: U + 'ccas-randonnees-juillet-2026-affiche-A3-BD-scaled-364x212.jpg', dateFull: 'Mardi 21 juillet 2026', timeFull: 'Départ 18h15 — durée 1h30 environ', address: 'Rue des Alouettes, 94320 Thiais', contact: 'CCAS · 01 48 92 42 42', price: 'Gratuit, sur inscription', lead: 'Une marche accompagnée en soirée, à allure douce, ouverte aux seniors thiaisiens.', body: "Encadrée par un éducateur sportif, la randonnée emprunte les allées ombragées du parc de Cluny en fin de journée, quand la chaleur retombe. Prévoir chaussures confortables et bouteille d'eau. Inscription auprès du CCAS — places limitées à 25 participants.", hasDoc: true, docLabel: 'Programme des randonnées CCAS' },
+      { id: 'atelier-bd', f: ['semaine'], cats: ['mediatheque', 'jeunesse'], day: '23', month: 'Juil', cat: 'Animations médiathèque', title: 'Atelier BD : crée ta première planche', time: '15h–17h', place: 'Médiathèque municipale', img: U + 'mediatheque-actions-culturelles-mai-juin-juillet-2026-90x132.jpg', dateFull: 'Jeudi 23 juillet 2026', timeFull: 'De 15h à 17h', address: '52 avenue de Versailles, 94320 Thiais', contact: 'Médiathèque · 01 48 92 42 80', price: 'Gratuit, sur inscription', lead: "Un illustrateur professionnel initie les 8-14 ans au découpage, au crayonné et à l'encrage.", body: "Du scénario à la planche finale : chaque participant repart avec sa création. Matériel fourni. Inscription au comptoir jeunesse de la médiathèque ou par téléphone — 12 places.", hasDoc: false, docLabel: '' },
+      { id: 'micro-folie', f: ['semaine'], cats: ['micro-folie', 'tout-public'], day: '25', month: 'Juil', cat: 'Micro-Folie', title: 'Micro-Folie : le Louvre en réalité virtuelle', time: '14h–18h', place: 'Espace municipal Grignon', img: U + 'scene_digitale_00-350x262.jpg', dateFull: 'Samedi 25 juillet 2026', timeFull: 'Séances de 30 min, de 14h à 18h', address: '78 avenue René Panhard, 94320 Thiais', contact: 'Micro-Folie · 01 48 92 42 75', price: 'Gratuit', lead: 'Casque sur la tête, parcourez les galeries du Louvre sans quitter Thiais.', body: "Le musée numérique de la Micro-Folie propose une visite immersive des chefs-d'œuvre du Louvre, accompagnée par un médiateur culturel. Séances toutes les 30 minutes, dès 8 ans. Réservation conseillée le week-end.", hasDoc: false, docLabel: '' },
+      { id: 'anim-estivales', f: ['semaine'], cats: ['tout-public', 'jeunesse'], day: '26', month: 'Juil', cat: "Thiais fête l'été", title: 'Animations estivales au parc', time: '14h–20h', place: "Parc de l'Europe", img: U + 'animations-estivales-2026-affiche-120-x-176-364x212.jpg', dateFull: 'Dimanche 26 juillet 2026', timeFull: 'De 14h à 20h en continu', address: "Avenue de l'Europe, 94320 Thiais", contact: 'Service événementiel · 01 48 92 42 42', price: 'Gratuit', lead: "Structures gonflables, jeux d'eau, ateliers créatifs : un dimanche d'été pour toute la famille.", body: "Dans le cadre de « Thiais fête l'été », le parc de l'Europe se transforme en village d'animations : accrobranche mobile, jeux d'eau, tournois sportifs, coin lecture de la médiathèque et goûter offert à 16h30. Accès libre, activités encadrées par les animateurs municipaux.", hasDoc: true, docLabel: "Affiche — Thiais fête l'été" },
+      { id: 'don-sang', f: ['mois'], cats: ['tout-public'], day: '16', month: 'Août', cat: 'Tout public', title: "Don du sang — collecte de l'été", time: '9h–14h', place: 'Centre de loisirs Jules Ferry', img: U + 'sang-364x212.jpg', dateFull: 'Dimanche 16 août 2026', timeFull: 'De 9h à 14h, sans interruption', address: 'Rue Jules Ferry, 94320 Thiais', contact: 'EFS Île-de-France · dondesang.efs.sante.fr', price: 'Gratuit — sur rendez-vous', lead: "Les réserves baissent chaque été : une heure de votre dimanche peut sauver trois vies.", body: "La collecte est organisée avec l'Établissement français du sang. Prenez rendez-vous en ligne pour éviter l'attente ; venez avec une pièce d'identité, ne venez pas à jeun. Collation offerte après le don.", hasDoc: false, docLabel: '' },
+      { id: 'expo-focale50', f: ['weekend', 'semaine', 'mois'], cats: ['saison-culturelle'], day: '29', month: 'Août', cat: 'Saison culturelle', title: 'Exposition photo du club Focale 50', time: "Jusqu'au 29 août", place: "Hall de l'Hôtel de Ville", img: U + 'expo_focale50-scaled-364x212.jpg', dateFull: "Jusqu'au samedi 29 août 2026", timeFull: "Aux horaires d'ouverture de la mairie", address: 'Rue Maurepas, 94320 Thiais', contact: 'Service culturel · 01 48 92 42 68', price: 'Entrée libre', lead: 'Le club photo thiaisien Focale 50 expose une année de regards portés sur la ville et ses habitants.', body: "Quarante tirages grand format sélectionnés par les membres du club : scènes de marché, architecture du Sénia, portraits d'habitants et instants volés dans les parcs. Un vote du public désignera la photographie de l'année, récompensée lors du Forum des activités en septembre.", hasDoc: false, docLabel: '' },
+      { id: 'forum-activites', f: ['mois'], cats: ['tout-public', 'sport', 'jeunesse'], day: '05', month: 'Sept', cat: 'Tout public', title: 'Forum des activités thiaisiennes', time: '10h–17h', place: 'Palais Omnisports', img: U + 'Forum-des-activites-thiaisiennes-2026-364x212.jpg', dateFull: 'Samedi 5 septembre 2026', timeFull: 'De 10h à 17h en continu', address: '96 avenue du Général de Gaulle, 94320 Thiais', contact: 'Service vie associative · 01 48 92 42 60', price: 'Entrée libre', lead: "Sport, culture, solidarité : toutes les associations thiaisiennes réunies pour préparer votre rentrée.", body: "Plus de 80 associations présentes, démonstrations sur le plateau sportif toute la journée, inscriptions sur place. Le Guichet unique délocalisé permet de finaliser dossiers et quotients familiaux sans passer par la mairie.", hasDoc: true, docLabel: 'Plan du forum & liste des exposants' },
+      { id: 'chantal-goya', f: ['mois'], cats: ['spectacles', 'saison-culturelle'], day: '12', month: 'Sept', cat: 'Saison culturelle', title: 'Le monde magique de Chantal Goya', time: 'Dès 21h', place: 'Palais Omnisports', img: U + 'chanteal_goya_thiais_couv-364x212.jpg', dateFull: 'Samedi 12 septembre 2026', timeFull: 'Ouverture des portes 20h — spectacle 21h', address: '96 avenue du Général de Gaulle, 94320 Thiais', contact: 'Billetterie · billetterie.ville-thiais.fr', price: 'De 25 € à 39 €', lead: 'Un spectacle féerique pour petits et grands, en ouverture de la saison culturelle 2026-2027.', body: "Décors géants, personnages emblématiques et deux heures de chansons intergénérationnelles. Placement numéroté ; billetterie en ligne et à l'accueil de l'Hôtel de Ville. Accès PMR : réservation recommandée au 01 48 92 42 68.", hasDoc: true, docLabel: 'Programme saison culturelle 2026-27' },
+      { id: 'jep-2026', f: ['mois'], cats: ['tout-public', 'jeunesse'], day: '19', month: 'Sept', cat: 'Tout public', title: 'Journées européennes du patrimoine', time: '14h–17h30', place: 'Parc de Cluny', img: U + 'JEP26_RS-ext-16x9-1-364x212.png', dateFull: 'Samedi 19 septembre 2026', timeFull: 'Visites guidées à 14h, 15h et 16h30', address: 'Rue des Alouettes, 94320 Thiais', contact: 'Service culturel · 01 48 92 42 68', price: 'Gratuit', lead: "Le patrimoine thiaisien se dévoile : du château de Cluny disparu aux grands projets d'aujourd'hui.", body: "Visites guidées par les Archives municipales, exposition de cartes anciennes et parcours enfants «\u00a0chasse au patrimoine\u00a0». En clôture, présentation du projet d'entrée de ville et de la Scène Digitale par les équipes de l'urbanisme.", hasDoc: false, docLabel: '' },
+      { id: 'rpe-jeux', f: ['mois'], cats: ['petite-enfance', 'education'], day: '24', month: 'Sept', cat: 'Petite enfance', title: 'Matinée jeux du Relais Petite Enfance', time: '9h30–11h30', place: 'Relais Petite Enfance', img: U + '27-juin-2026-Remise-des-prix-aux-CM2-HP-31-205x160.png', dateFull: 'Jeudi 24 septembre 2026', timeFull: 'De 9h30 à 11h30', address: 'Rue Maurepas, 94320 Thiais', contact: 'RPE · 01 48 92 42 55', price: 'Gratuit, sur inscription', lead: 'Un temps de jeux et de motricité pour les 0-3 ans, avec leurs parents ou assistantes maternelles.', body: "Parcours de motricité, comptines et espace sensoriel animés par les éducatrices du Relais. Ouvert aux familles thiaisiennes et aux professionnelles de la petite enfance. Inscription par téléphone la semaine précédente.", hasDoc: false, docLabel: '' },
+      { id: 'theodasium', f: ['mois'], cats: ['sport', 'jeunesse'], day: '17', month: 'Oct', cat: 'Sport', title: 'Theodasium 2026 — le week-end 100 % sport', time: 'Sam. & dim. · 10h–19h', place: 'Palais Omnisports', img: U + '500-flyers-15x21-theodasium-2026-364x212.jpg', dateFull: 'Samedi 17 & dimanche 18 octobre 2026', timeFull: 'De 10h à 19h les deux jours', address: '96 avenue du Général de Gaulle, 94320 Thiais', contact: 'Service des sports · 01 48 92 42 50', price: 'Gratuit', lead: 'Deux jours pour tester plus de 30 disciplines avec les clubs thiaisiens — esport compris.', body: "Initiations encadrées, tournois flash, mur d'escalade mobile et plateau esport en avant-première de La Scène Digitale. Chaque participant reçoit un passeport sportif ; les plus assidus gagnent des places pour les Internationaux de GR 2027.", hasDoc: true, docLabel: 'Programme Theodasium 2026' },
+      { id: 'bossa-nova', f: ['mois'], cats: ['spectacles'], day: '28', month: 'Nov', cat: 'Spectacles & concerts', title: 'Festival Bossa Nova 2026', time: 'Dès 20h30', place: 'Café-théâtre — Espace Grignon', img: U + 'festival_bossa_nova_2026-scaled-364x212.jpg', dateFull: 'Samedi 28 novembre 2026', timeFull: 'Concerts à 20h30 et 22h', address: '78 avenue René Panhard, 94320 Thiais', contact: 'Billetterie · billetterie.ville-thiais.fr', price: '12 € — placement libre', lead: 'Une soirée aux couleurs du Brésil : deux quartets, une piste de danse et un bar aux saveurs cariocas.', body: "Le festival réunit deux formations franco-brésiliennes pour revisiter les classiques de Jobim et Gilberto. Restauration légère sur place dès 19h30. Réservation en ligne fortement conseillée — la salle affiche complet chaque année.", hasDoc: false, docLabel: '' },
+      { id: 'corrida', f: ['mois'], cats: ['sport'], day: '06', month: 'Déc', cat: 'Sport', title: 'Corrida de Thiais 2026', time: 'Dès 9h', place: 'Départ Palais Omnisports', img: U + 'Corrida-de-Thiais-2026-affiche-364x212.jpg', dateFull: 'Dimanche 6 décembre 2026', timeFull: 'Courses de 9h à 12h30 selon catégories', address: '96 avenue du Général de Gaulle, 94320 Thiais', contact: 'Service des sports · 01 48 92 42 50', price: '5 € à 12 € selon course — gratuit pour les écoles', lead: "La course populaire de fin d'année : 5 km, 10 km et courses enfants dans les rues de Thiais.", body: "Parcours labellisé FFA, échauffement collectif en musique, ravitaillements aux 2,5 km. Dossards à retirer la veille au Palais Omnisports. Une partie des inscriptions est reversée au Téléthon.", hasDoc: true, docLabel: 'Règlement & parcours 2026' }
     ];
   }
 
@@ -523,20 +608,26 @@ class Component extends DCLogic {
     const s = this.state;
     const all = this.getEvents();
 
-    const timeDefs = [['tout', 'Tout'], ['soir', 'Ce soir'], ['demain', 'Demain'], ['weekend', 'Ce week-end'], ['semaine', 'La semaine prochaine'], ['mois', 'Les mois suivants']];
+    const timeDefs = [['tout', 'Tout'], ['soir', 'Ce soir'], ['demain', 'Demain'], ['weekend', 'Cette semaine'], ['semaine', 'La semaine prochaine'], ['mois', 'Les mois suivants']];
     const timeFilters = timeDefs.map(([id, label]) => {
       const active = s.timeFilter === id;
-      return { label, active: active ? 'true' : 'false', bg: active ? '#0E64A5' : '#FFFFFF', color: active ? '#FFFFFF' : '#33475B', border: active ? '#0E64A5' : '#D8E4EE', select: () => this.setState({ timeFilter: id }) };
+      const count = id === 'tout' ? all.length : all.filter((e) => e.f.includes(id)).length;
+      return {
+        label, count: String(count), active: active ? 'true' : 'false',
+        bg: active ? '#0E64A5' : '#FFFFFF', color: active ? '#FFFFFF' : '#33475B', border: active ? '#0E64A5' : '#D8E4EE',
+        countBg: active ? '#FFFFFF' : '#EDF4FA', countColor: '#0E64A5',
+        select: () => this.setState({ timeFilter: id })
+      };
     });
 
-    const catDefs = [['tout', 'Toutes'], ['tout-public', 'Tout public'], ['mediatheque', 'Animations médiathèque'], ['micro-folie', 'Micro-Folie'], ['saison-culturelle', 'Saison Culturelle'], ['sport', 'Sport'], ['ccas', 'CCAS'], ['seniors', 'Seniors'], ['jeunesse', 'Jeunesse'], ['education', 'Éducation'], ['petite-enfance', 'Petite Enfance'], ['spectacles', 'Spectacles & concerts']];
+    const catDefs = [['tout', 'Toutes'], ['tout-public', 'Tout public'], ['mediatheque', 'Animations médiathèque'], ['micro-folie', 'Micro-Folie'], ['saison-culturelle', 'Saison culturelle'], ['sport', 'Sport'], ['ccas', 'CCAS'], ['seniors', 'Seniors'], ['jeunesse', 'Jeunesse'], ['education', 'Éducation'], ['petite-enfance', 'Petite enfance'], ['spectacles', 'Spectacles & concerts']];
     const catFilters = catDefs.map(([id, label]) => {
       const active = s.catFilter === id;
       return { label, active: active ? 'true' : 'false', bg: active ? '#0E64A5' : '#FFFFFF', color: active ? '#FFFFFF' : '#33475B', border: active ? '#0E64A5' : '#D8E4EE', select: () => this.setState({ catFilter: id }) };
     });
 
     const filtered = all.filter((e) => (s.timeFilter === 'tout' || e.f.includes(s.timeFilter)) && (s.catFilter === 'tout' || e.cats.includes(s.catFilter)));
-    const events = filtered.map((e, i) => Object.assign({}, e, { open: this.openEvent(e.id), delay: (Math.min(i, 10) * 55) + 'ms' }));
+    const events = filtered.map((e, i) => Object.assign({}, e, { href: '#e/' + e.id, open: this.openEvent(e.id), delay: (Math.min(i, 10) * 55) + 'ms' }));
 
     const sel = all.find((e) => e.id === s.selId);
     const catLabelMap = {}; catDefs.forEach(([id, label]) => { catLabelMap[id] = label; });
@@ -544,11 +635,11 @@ class Component extends DCLogic {
     if (sel) {
       ev = Object.assign({}, sel, { cats: sel.cats.map((c) => ({ label: catLabelMap[c] || c })) });
       related = all.filter((e) => e.id !== sel.id && e.cats.some((c) => sel.cats.includes(c))).slice(0, 3)
-        .map((r) => ({ title: r.title, img: r.img, dateLabel: r.day + ' ' + r.month + ' · ' + r.place, open: this.openEvent(r.id) }));
+        .map((r) => ({ title: r.title, img: r.img, dateLabel: r.day + ' ' + r.month + ' · ' + r.place, href: '#e/' + r.id, open: this.openEvent(r.id) }));
     }
 
     const menuDefs = [
-      ['Ma mairie, ma ville', ['Découvrir Thiais', "Le Maire et l'équipe municipale", 'Grands projets — Sénia, La Scène Digitale, entrée de ville', 'Mes démarches', 'Marchés publics', 'Thiais Magazine']],
+      ['Ma mairie, ma ville', ['Actualités', 'Découvrir Thiais', "Le Maire et l'équipe municipale", 'Grands projets — Sénia, La Scène Digitale, entrée de ville', 'Mes démarches', 'Marchés publics', 'Thiais Magazine']],
       ['Enfance, jeunesse', ['Petite enfance', 'Vie scolaire & inscriptions', 'Restauration municipale', 'Accueils de loisirs', 'Point Information Jeunesse']],
       ['Mon cadre de vie, ma sécurité', ['Sécurité & tranquillité', 'Mobilités & stationnement', 'Environnement', 'Gestion des déchets', 'Urbanisme & logement']],
       ['Culture, loisirs et sport', ['Agenda', 'Saison culturelle', 'Médiathèque', 'La Micro-Folie', 'Sport & associations', 'Grands événements']],
@@ -560,10 +651,10 @@ class Component extends DCLogic {
       open: s.openSection === i,
       chev: s.openSection === i ? 'rotate(180deg)' : 'none',
       toggle: () => this.setState({ openSection: s.openSection === i ? -1 : i }),
-      children: children.map((c) => (c === 'Agenda' ? { label: c, go: (e) => { e.preventDefault(); this.setState({ menuOpen: false, selId: null, timeFilter: 'tout', catFilter: 'tout' }); } } : { label: c, go: this.nav(c) }))
+      children: children.map((c) => (c === 'Agenda' ? { label: c, go: (e) => { e.preventDefault(); this.setState({ menuOpen: false, selId: null, timeFilter: 'tout', catFilter: 'tout' }); try { window.history.replaceState(null, '', window.location.pathname + window.location.search); } catch (er) {} } } : { label: c, go: this.nav(c) }))
     }));
 
-    const quickReplies = ['Quoi faire avec des enfants ?', 'Les prochains concerts ?', "C'est gratuit ?"].map((label) => ({ label, send: () => this.sendChat(label) }));
+    const quickReplies = ['Que faire avec des enfants ?', 'Les prochains concerts ?', "C'est gratuit ?"].map((label) => ({ label, send: () => this.sendChat(label) }));
 
     return {
       zoomLevel: s.zoom,
@@ -575,36 +666,46 @@ class Component extends DCLogic {
       detailCols: s.isDesktop ? 'minmax(0, 1fr) 330px' : '1fr',
       isList: !sel, isDetail: !!sel,
       ev: ev || {}, related, hasRelated: related.length > 0,
-      backToList: (e) => { if (e) e.preventDefault(); this.setState({ selId: null }); try { window.history.replaceState(null, '', window.location.pathname + window.location.search); } catch (er) {} },
+      backToList: (e) => { if (e) e.preventDefault(); this.setState({ selId: null }); try { window.history.pushState(null, '', window.location.pathname + window.location.search); } catch (er) {} },
       resultCount: filtered.length + (filtered.length > 1 ? ' événements' : ' événement'),
       noResults: filtered.length === 0,
       timeFilters, catFilters, events,
+      resetFilters: () => this.setState({ timeFilter: 'tout', catFilter: 'tout' }),
       addCalendar: () => { this.setState({ toastMsg: 'Fichier .ics généré — ajouté à votre calendrier (démo)' }); clearTimeout(this._navT2); this._navT2 = setTimeout(() => this.setState({ toastMsg: null }), 3500); },
-      navMaps: this.nav('Google Maps — itinéraire'), navShare: this.nav('Partage'), navDoc: this.nav('Téléchargement PDF'),
+      navMaps: this.navExt('Google Maps — itinéraire'), navShare: this.nav('Partage'), navDoc: this.nav('Téléchargement PDF'),
       openMenu: () => this.setState({ menuOpen: true }), closeMenu: () => this.setState({ menuOpen: false }),
-      menuOpen: s.menuOpen, menuSections,
+      menuOpen: s.menuOpen, menuExpanded: s.menuOpen ? 'true' : 'false', menuSections,
+      menuSearchQ: s.menuSearchQ || '', menuSearchChange: (e) => this.setState({ menuSearchQ: e.target.value }),
+      menuSearchSubmit: (e) => { e.preventDefault(); this.demoNav(s.menuSearchQ ? 'Résultats pour «\u00a0' + s.menuSearchQ + '\u00a0»' : 'Résultats de recherche'); },
+      alertVisible: !s.alertClosed, closeAlert: () => this.setState({ alertClosed: true }),
+      navAlert: this.navTo('article.html'),
       goHome: this.navTo('index.html'),
       searchQ: s.searchQ, searchChange: (e) => this.setState({ searchQ: e.target.value }),
-      searchSubmit: (e) => { e.preventDefault(); this.demoNav('Résultats de recherche'); },
-      a11yOpen: s.a11yOpen, toggleA11y: () => this.setState({ a11yOpen: !s.a11yOpen }),
-      fontPlus: () => this.setState({ zoom: Math.min(1.35, s.zoom + 0.08) }),
-      fontMinus: () => this.setState({ zoom: Math.max(0.85, s.zoom - 0.08) }),
-      contrastLabel: s.contrast ? 'Activé' : 'Désactivé',
+      searchSubmit: (e) => { e.preventDefault(); this.demoNav(s.searchQ ? 'Résultats pour «\u00a0' + s.searchQ + '\u00a0»' : 'Résultats de recherche'); },
+      a11yOpen: s.a11yOpen, a11yExpanded: s.a11yOpen ? 'true' : 'false', toggleA11y: () => this.setState({ a11yOpen: !s.a11yOpen }),
+      fontPlus: () => this.setState({ zoom: Math.min(2, s.zoom + 0.125) }),
+      fontMinus: () => this.setState({ zoom: Math.max(0.875, s.zoom - 0.125) }),
+      zoomPct: Math.round(s.zoom * 100) + ' %',
+      contrastLabel: s.contrast ? 'Activé' : 'Désactivé', contrastPressed: s.contrast ? 'true' : 'false',
       contrastBg: s.contrast ? '#0B2B45' : '#FFFFFF', contrastColor: s.contrast ? '#FFFFFF' : '#0B2B45',
       toggleContrast: () => {
         const on = !s.contrast; this.setState({ contrast: on });
         let st = document.getElementById('thiais-a11y-css');
         if (on) {
           if (!st) { st = document.createElement('style'); st.id = 'thiais-a11y-css'; document.head.appendChild(st); }
-          st.textContent = '#thiais-root a { text-decoration: underline !important; } #thiais-root { filter: contrast(1.08); }';
+          // Filtre sur header/main/footer uniquement : un filter sur #thiais-root ferait des
+          // éléments fixed (chat, menu, toast) des enfants positionnés par rapport au document.
+          st.textContent = '#thiais-root a { text-decoration: underline !important; } #thiais-root [style*="color: rgb(90, 110, 128)"] { color: #33475B !important; } #thiais-root > header, #thiais-root > main, #thiais-root > footer { filter: contrast(1.15); }';
         } else if (st) { st.textContent = ''; }
       },
-      navSocial: this.nav('Réseaux sociaux'), navContact: this.nav('Formulaire de contact'),
+      navSocial: this.navExt('Réseaux sociaux de la Ville'), navContact: this.nav('Formulaire de contact'),
       navLegal: this.nav('Mentions légales'), navRgpd: this.nav('RGPD'), navA11yDecl: this.nav("Déclaration d'accessibilité"),
-      navSitemap: this.nav('Plan du site'),
-      chatOpen: s.chatOpen, toggleChat: () => this.setState({ chatOpen: !s.chatOpen, a11yOpen: false }),
+      navSitemap: this.nav('Plan du site'), navCredits: this.nav('Crédits'), navJobs: this.nav('Recrutement'),
+      chatOpen: s.chatOpen, chatExpanded: s.chatOpen ? 'true' : 'false',
+      chatBtnAria: s.chatOpen ? "Fermer l'assistant Thiais GPT" : "Ouvrir l'assistant Thiais GPT",
+      toggleChat: () => this.setState({ chatOpen: !s.chatOpen, a11yOpen: false }),
       chatBtnLabel: s.chatOpen ? 'Fermer' : 'Thiais GPT',
-      chatMsgs: s.chatMsgs, chatTyping: s.chatTyping, showQuickReplies: s.chatOpen && s.chatMsgs.length < 3,
+      chatMsgs: s.chatMsgs, chatTyping: s.chatTyping, showQuickReplies: s.chatOpen && !s.chatTyping,
       quickReplies, chatListAnchor: React.createElement('span', { ref: this.chatListRef }),
       chatInput: s.chatInput, chatInputChange: (e) => this.setState({ chatInput: e.target.value }),
       chatSubmit: (e) => { e.preventDefault(); this.sendChat(s.chatInput); },
